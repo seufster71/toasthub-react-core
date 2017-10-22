@@ -11,7 +11,7 @@ export default class LoginContainer extends Component {
 
     render() {
       return (
-          <Login menus={this.state.fields}/>
+          <div> Login Page</div>
       );
     }
 
