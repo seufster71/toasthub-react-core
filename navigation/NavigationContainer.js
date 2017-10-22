@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Navigation from './Navigation.js'
+import Navigation from './../../navigationViews/Navigation.js';
+import Api from '../api/Api.js';
 
 export default class NavigationContainer extends Component {
 	  constructor(props) {
@@ -9,26 +10,21 @@ export default class NavigationContainer extends Component {
 		 };
 	  }
 
-		componentWillMount() {
+		setMenus(responseJson) {
+			this.setState({menus:responseJson.params.MENUS})
+		}
+
+		componentDidMount() {
 		  let requestParams = {};
 			requestParams.action = "INIT_MENU";
 			requestParams.service = "PUBLIC_SVC";
 			requestParams.menuNames = new Array("PUBLIC_MENU_RIGHT");
-		  fetch('/api/public/callService',{
-			  method: 'POST',
-			  headers: {
-			      "Content-type": "application/json"
-			    },
-			  body: JSON.stringify({params:requestParams})
-		  })
-			.then((response) => response.json())
-		  .then((responseJson) => {
-			  console.log('Request succeeded with JSON response', responseJson);
-			  this.setState({menus:responseJson.params.MENUS})
-		  })
-		  .catch(function(error) {
-			  console.log('Request failed', error);
-		  });
+			let params = {};
+			params.requestParams = requestParams;
+			params.responseCallBack = (params) => {this.setMenus(params)};
+		  let api = new Api();
+			api.callService(params);
+
 		}
 
 	  render() {
