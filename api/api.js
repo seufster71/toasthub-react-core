@@ -3,10 +3,9 @@ import React, { Component } from 'react';
 export default class Api extends Component {
 	  constructor(props) {
 	    super(props);
-			this.callService = this.callService.bind(this);
 	  }
 
-		callService(params) {
+		static callService(params) {
 			let requestParams = {};
 			if (params != null ) {
 				if ( params.requestParams == null ) {

@@ -22,14 +22,12 @@ export default class NavigationContainer extends Component {
 			let params = {};
 			params.requestParams = requestParams;
 			params.responseCallBack = (params) => {this.setMenus(params)};
-		  let api = new Api();
-			api.callService(params);
-
+			Api.callService(params);
 		}
 
 	  render() {
 		  return (
-				  <Navigation headerName={this.props.headerName} menus={this.state.menus}/>
+				  <Navigation headerName={this.props.headerName} menus={this.state.menus} navChange={this.props.navChange}/>
 		  );
 	  }
 }
