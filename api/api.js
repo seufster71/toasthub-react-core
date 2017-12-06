@@ -1,38 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class Api extends Component {
-	  constructor(props) {
-	    super(props);
-	  }
+export default function callService(params) {
 
-		static callService(params) {
-			let requestParams = {};
-			if (params != null ) {
-				if ( params.requestParams == null ) {
-					console.log('Params are missing');
-				} else {
-					requestParams = params.requestParams;
-				}
+		let requestParams = {};
+		if (params != null ) {
+			if ( params.requestParams == null ) {
+				console.log('Params are missing');
 			} else {
-				console.log('Missing params');
-				return;
+				requestParams = params.requestParams;
 			}
-			requestParams.metrics = {};
-			const d = new Date();
-			requestParams.metrics.browserStart = d.getTime();
-			requestParams.metrics.browserZone = new Date().toString().match(/([A-Z]+[+-][0-9]+.*)/)[1];
-		  fetch('/api/public/callService',{
-			  method: 'POST',
-			  headers: { "Content-type": "application/json" },
-			  body: JSON.stringify({params:params.requestParams})
-		  })
-			.then((response) => response.json())
-		  .then((responseJson) => {
-			  console.log('Request succeeded with JSON response', responseJson);
-			  	params.responseCallBack(responseJson);
-		  })
-		  .catch(function(error) {
-			  console.log('Request failed', error);
-		  });
+		} else {
+			console.log('Missing params');
+			return;
 		}
+		requestParams.metrics = {};
+		const d = new Date();
+		requestParams.metrics.browserStart = d.getTime();
+		requestParams.metrics.browserZone = new Date().toString().match(/([A-Z]+[+-][0-9]+.*)/)[1];
+		fetch(params.URI,{
+			method: 'POST',
+			headers: { "Content-type": "application/json" },
+			body: JSON.stringify({params:params.requestParams})
+		})
+		.then((response) => response.json())
+		.then((responseJson) => {
+			console.log('Request succeeded with JSON response', responseJson);
+			params.responseCallBack(responseJson);
+		})
+		.catch(function(error) {
+			console.log('Request failed', error);
+		});
+
 }
