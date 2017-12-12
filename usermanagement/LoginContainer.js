@@ -15,6 +15,8 @@ export default class LoginContainer extends Component {
       };
       this.showLogin = this.showLogin.bind(this);
       this.showRegistration = this.showRegistration.bind(this);
+      this.fieldChangeEvent = this.fieldChangeEvent.bind(this);
+      this.buttonClick = this.buttonClick.bind(this);
     }
 
     componentDidMount() {
@@ -61,6 +63,20 @@ export default class LoginContainer extends Component {
       this.setState({loginRegistration:'login'});
     }
 
+    fieldChangeEvent(e) {
+      console.log("field changed "+e.target.id);
+    }
+
+    buttonClick(e){
+    //  debugger;
+      console.log("button clicked "+e.target.id);
+      let loginFields = this.state.appForms.LOGIN_FORM;
+      for (var i = 0; i < loginFields.length; i++) {
+        let object = document.getElementById(loginFields[i].name);
+        console.log("value = "+object.value);
+      }
+    }
+
     render() {
       if (this.state.appForms.LOGIN_FORM != null && this.state.appTexts.LOGIN_FORM != null
         && this.state.appForms.REGISTRATION_FORM && this.state.appTexts.REGISTRATION_FORM) {
@@ -73,7 +89,9 @@ export default class LoginContainer extends Component {
             registrationLabels={this.state.appLabels.REGISTRATION_FORM}
             registrationTexts={this.state.appTexts.REGISTRATION_FORM}
             onChangeLogin={this.showLogin}
-            onChangeRegistration={this.showRegistration}/>
+            onChangeRegistration={this.showRegistration}
+            fieldChangeEvent={this.fieldChangeEvent}
+            buttonClick={this.buttonClick}/>
         );
       } else {
         return (
