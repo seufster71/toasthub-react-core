@@ -17,18 +17,23 @@ export default function callService(params) {
 		const d = new Date();
 		requestParams.metrics.browserStart = d.getTime();
 		requestParams.metrics.browserZone = new Date().toString().match(/([A-Z]+[+-][0-9]+.*)/)[1];
-		fetch(params.URI,{
-			method: 'POST',
-			headers: { "Content-type": "application/json" },
-			body: JSON.stringify({params:params.requestParams})
-		})
-		.then((response) => response.json())
-		.then((responseJson) => {
-			console.log('Request succeeded with JSON response', responseJson);
-			params.responseCallBack(responseJson);
-		})
-		.catch(function(error) {
-			console.log('Request failed', error);
-		});
 
+		return new Promise((resolve,reject) => {
+			fetch(params.URI,{
+				method: 'POST',
+				headers: { "Content-type": "application/json" },
+				body: JSON.stringify({params:params.requestParams})
+			})
+			.then((response) => response.json())
+			.then((responseJson) => {
+				console.log('Request succeeded with JSON response', responseJson);
+				resolve(responseJson);
+				//params.responseCallBack(responseJson);
+			})
+			.catch(function(error) {
+				console.log('Request failed', error);
+				resolve();
+			});
+
+		});
 }
