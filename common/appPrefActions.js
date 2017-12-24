@@ -2,7 +2,6 @@ import callService from '../api/Api';
 
 // action
 export function loadInitApp(responseJson) {
-  debugger;
   return { type: "LOAD_INIT_APP", responseJson };
 }
 
@@ -20,7 +19,7 @@ export function initApp() {
     let params = {};
     params.requestParams = requestParams;
     params.URI = '/api/login/callService';
-    //params.responseCallBack = (params) => { this.setFields(params); };
+    
     return callService(params).then( (responseJson) => {
       dispatch(loadInitApp(responseJson));
     }).catch(error => {

@@ -9,11 +9,6 @@ class LoginContainer extends Component {
     constructor(props) {
       super(props);
 			this.state = {
-  //      appForms:{LOGIN_FORM:[],REGISTRATION_FORM:[],FORGETPASSWORD_FORM:[],PASSWORD_CHANGE_FORM:[]},
-  //      appTexts:{GLOBAL_PAGE:null,LOGIN_FORM:null,REGISTRATION_FORM:null,FORGETPASSWORD_FORM:null,PASSWORD_CHANGE_FORM:null},
-  //      appLabels:{LOGIN_FORM:[],REGISTRATION_FORM:[]},
-  //      appOptions:{REGISTRATION_FORM:{}},
-  //      appGlobal:{LANGUAGES:[]},
         loginRegistration:"login",
   //      lang:"en"
       };
@@ -23,63 +18,6 @@ class LoginContainer extends Component {
       this.buttonClick = this.buttonClick.bind(this);
     }
 
-/*    componentDidMount() {
-      let requestParams = {};
-      requestParams.action = "INIT";
-      requestParams.service = "LOGIN_SVC";
-      requestParams.appForms = new Array("LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
-      requestParams.appTexts = new Array("GLOBAL_PAGE","LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
-      requestParams.appLabels = new Array("LOGIN_FORM","REGISTRATION_FORM");
-      requestParams.appOptions = new Array("REGISTRATION_FORM");
-      requestParams.appGlobal = new Array("LANGUAGES");
-      let params = {};
-      params.requestParams = requestParams;
-      params.URI = '/api/login/callService';
-      params.responseCallBack = (params) => { this.setFields(params); };
-      callService(params);
-    }
-*/
-  /*  setFields(responseJson) {
-      let state = {};
-      if (responseJson != null && responseJson.params != null) {
-        if (responseJson.params.appPageFormFields != null) {
-          state.appForms = {};
-          if (responseJson.params.appPageFormFields.LOGIN_FORM != null) {
-            state.appForms.LOGIN_FORM = responseJson.params.appPageFormFields.LOGIN_FORM;
-          }
-          if (responseJson.params.appPageFormFields.REGISTRATION_FORM != null) {
-            state.appForms.REGISTRATION_FORM = responseJson.params.appPageFormFields.REGISTRATION_FORM;
-          }
-          if (responseJson.params.appPageFormFields.FORGOTPASSWORD_FORM != null) {
-            state.appForms.FORGOTPASSWORD_FORM = responseJson.params.appPageFormFields.FORGOTPASSWORD_FORM;
-          }
-          if (responseJson.params.appPageFormFields.PASSWORD_CHANGE_FORM != null) {
-            state.appForms.PASSWORD_CHANGE_FORM = responseJson.params.appPageFormFields.PASSWORD_CHANGE_FORM;
-          }
-        }
-      }
-      this.setState({appForms:{
-        LOGIN_FORM:responseJson.params.appPageFormFields.LOGIN_FORM,
-        REGISTRATION_FORM:responseJson.params.appPageFormFields.REGISTRATION_FORM,
-        FORGOTPASSWORD_FORM:responseJson.params.appPageFormFields.FORGOTPASSWORD_FORM,
-        PASSWORD_CHANGE_FORM:responseJson.params.appPageFormFields.PASSWORD_CHANGE_FORM
-      },appTexts:{
-        GLOBAL_PAGE:responseJson.params.appPageTexts.GLOBAL_PAGE,
-        LOGIN_FORM:responseJson.params.appPageTexts.LOGIN_FORM,
-        REGISTRATION_FORM:responseJson.params.appPageTexts.REGISTRATION_FORM,
-        FORGOTPASSWORD_FORM:responseJson.params.appPageTexts.FORGOTPASSWORD_FORM,
-        PASSWORD_CHANGE_FORM:responseJson.params.appPageTexts.PASSWORD_CHANGE_FORM
-      },appLabels:{
-        LOGIN_FORM:responseJson.params.appPageLabels.LOGIN_FORM,
-        REGISTRATION_FORM:responseJson.params.appPageLabels.REGISTRATION_FORM
-      },appOptions:{
-        REGISTRATION_FORM:responseJson.params.appPageOptions.REGISTRATION_FORM
-      },appGlobal:{
-        LANGUAGES:responseJson.params.appGlobal.LANGUAGES
-      }
-      });
-    }
-*/
     showRegistration() {
       this.setState({loginRegistration:'registration'});
     }
@@ -161,17 +99,17 @@ class LoginContainer extends Component {
 }
 
 LoginContainer.propTypes = {
-  appForms: PropTypes.array,
-  appTexts: PropTypes.array,
-  appLabels: PropTypes.array,
-  appOptions: PropTypes.array,
-  appGlobal: PropTypes.array,
+  appForms: PropTypes.object,
+  appTexts: PropTypes.object,
+  appLabels: PropTypes.object,
+  appOptions: PropTypes.object,
+  appGlobal: PropTypes.object,
   lang: PropTypes.string
 };
 
 function mapStateToProps(state, ownProps) {
-  return {appForms:state.appForms, appLabels:state.appLabels, appTexts:state.appTexts,
-    appOptions:state.appOptions, lang:state.lang, appGlobal:state.appGlobal};
+  return {appForms:state.appPrefs.appForms, appLabels:state.appPrefs.appLabels, appTexts:state.appPrefs.appTexts,
+    appOptions:state.appPrefs.appOptions, lang:state.lang, appGlobal:state.appPrefs.appGlobal};
 }
 
 export default connect(mapStateToProps)(LoginContainer);

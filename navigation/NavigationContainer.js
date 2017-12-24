@@ -2,29 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Navigation from '../../navigationViews/Navigation.js';
 import callService from '../api/Api.js';
+import {connect} from 'react-redux';
 
-export default class NavigationContainer extends Component {
+class NavigationContainer extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			menus: {}
-		};
-	}
 
-	componentDidMount() {
-		let requestParams = {};
-		requestParams.action = "INIT_MENU";
-		requestParams.service = "PUBLIC_SVC";
-		requestParams.menuNames = new Array("PUBLIC_MENU_RIGHT");
-		let params = {};
-		params.requestParams = requestParams;
-		params.URI = '/api/public/callService';
-		params.responseCallBack = (params) => { this.setMenus(params); };
-		callService(params);
-	}
-
-	setMenus(responseJson) {
-		this.setState({menus:responseJson.params.MENUS});
 	}
 
 	navClick() {
@@ -32,13 +15,26 @@ export default class NavigationContainer extends Component {
 	}
 
 	render() {
+		let menus = {};
+		if (this.props.menus != null) {
+			menus = this.props.menus;
+		}
 		return (
-			<Navigation headerName={this.props.headerName} menus={this.state.menus} navClick={this.props.navClick}/>
+			<Navigation headerName={this.props.headerName} menus={menus} navClick={this.props.navClick}/>
 		);
 	}
 }
 
 NavigationContainer.propTypes = {
 	headerName: PropTypes.string.isRequired,
-	navClick: PropTypes.func.isRequired
+	navClick: PropTypes.func.isRequired,
+	menus: PropTypes.object,
+	lang: PropTypes.string,
+	appGlobal: PropTypes.object
 };
+
+function mapStateToProps(state, ownProps) {
+  return {menus:state.appMenus.menus, lang:state.lang, appGlobal:state.appPrefs.appGlobal};
+}
+
+export default connect(mapStateToProps)(NavigationContainer);
