@@ -10,7 +10,6 @@ class LoginContainer extends Component {
       super(props);
 			this.state = {
         loginRegistration:"login",
-  //      lang:"en"
       };
       this.showLogin = this.showLogin.bind(this);
       this.showRegistration = this.showRegistration.bind(this);

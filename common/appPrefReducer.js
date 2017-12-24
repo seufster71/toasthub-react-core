@@ -1,7 +1,7 @@
 export default function appPrefReducer(state = {}, action) {
   switch(action.type) {
     case 'LOAD_INIT_APP': {
-      let myState = {lang:"en"};
+      let myState = {};
       if (action.responseJson != null && action.responseJson.params != null) {
         if (action.responseJson.params.appPageFormFields != null) {
           myState.appForms = {};
@@ -47,6 +47,14 @@ export default function appPrefReducer(state = {}, action) {
           myState.appGlobal = {};
           if (action.responseJson.params.LANGUAGES != null) {
             myState.appGlobal.LANGUAGES = action.responseJson.params.LANGUAGES;
+            let languages = action.responseJson.params.LANGUAGES;
+            for (let i = 0; i < languages.length; i++) {
+              if (languages[i].defaultLang) {
+                myState.lang = languages[i].code;
+              }
+            }
+          } else {
+            myState.lang = "en";
           }
         }
         return Object.assign({}, state, myState);
