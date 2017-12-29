@@ -15,18 +15,20 @@ class NavigationContainer extends Component {
 	}
 
 	render() {
+		console.log("render navigationcontainer " + this.props.appPrefs);
 		let menus = {};
 		if (this.props.menus != null) {
 			menus = this.props.menus;
 		}
 		return (
-			<Navigation headerName={this.props.headerName} menus={menus} navClick={this.props.navClick}/>
+			<Navigation appPrefs={this.props.appPrefs} menus={menus} menuName={this.props.menuName} navClick={this.props.navClick}/>
 		);
 	}
 }
 
 NavigationContainer.propTypes = {
-	headerName: PropTypes.string.isRequired,
+	appPrefs: PropTypes.object.isRequired,
+	menuName: PropTypes.string.isRequired,
 	navClick: PropTypes.func.isRequired,
 	menus: PropTypes.object,
 	lang: PropTypes.string,
@@ -34,7 +36,8 @@ NavigationContainer.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-  return {menus:state.appMenus.menus, lang:state.lang, appGlobal:state.appPrefs.appGlobal};
+	console.log(state);
+  return {menus:state.appMenus.menus, lang:state.lang, appPrefs:state.appPrefs, appGlobal:state.appPrefs.appGlobal};
 }
 
 export default connect(mapStateToProps)(NavigationContainer);

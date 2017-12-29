@@ -1,6 +1,6 @@
 export default function appPrefReducer(state = {}, action) {
   switch(action.type) {
-    case 'LOAD_INIT_APP': {
+    case 'LOAD_INIT_PUBLIC': {
       let myState = {};
       if (action.responseJson != null && action.responseJson.params != null) {
         if (action.responseJson.params.appPageFormFields != null) {
@@ -61,10 +61,11 @@ export default function appPrefReducer(state = {}, action) {
       } else {
         return state;
       }
-
     }
+    case 'LOAD_INIT_MEMBER':
+      return state;
     case 'SAVE_APPFORMS':
-      return state.appForms;
+      return state;
     case 'SAVE_APPTEXTS':
       return state.appTexts;
     case 'SAVE_APPLABELS':

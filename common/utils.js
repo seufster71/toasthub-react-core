@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-const validateFields = (fields,lang,languages,group,prefix) => {
+const validateFields = (state,fields,lang,languages,group,prefix) => {
   let isValid = true;
-  let errorList = new Array();
+  let errorMap = {};
   for( let i = 0, len = fields.length; i < len; i++ ) {
     if(fields[i].rendered ) {
       switch (fields[i].fieldType) {
@@ -15,13 +15,10 @@ const validateFields = (fields,lang,languages,group,prefix) => {
               if (prefix != null) {
                 fieldName = prefix.concat("-").concat(fieldName);
               }
-              let inputObj = jQuery("#".concat(fieldName).concat("-").concat(languages[j].code));
-              let input = inputObj.val();
-              if (input == null || (input != null && input == "")){
+              let fieldValue = state[fieldName.concat("-").concat(languages[j].code)];
+              if (fieldValue == null || (fieldValue != null && fieldValue == "")){
                   isValid = false;
-                  inputObj.addClass('input-error');
-              } else {
-                  inputObj.removeClass('input-error');
+                  errorMap[fieldName.concat("-").concat(languages[j].code)] = "required";
               }
             }
           }
@@ -32,37 +29,26 @@ const validateFields = (fields,lang,languages,group,prefix) => {
           if (prefix != null) {
             fieldName = prefix.concat("-").concat(fieldName);
           }
-          let inputObj = jQuery("#".concat(fieldName));
-          let input = inputObj.val();
-          let errorText = jQuery("#".concat(fieldName).concat("-error"));
+          let fieldValue = state[fieldName];
+
           let requiredError = false;
           if (fields[i].required){
-            if (input == null || (input != null && input == "")){
+            if (fieldValue == null || (fieldValue != null && fieldValue == "")){
               isValid = false;
-              inputObj.addClass('input-error');
-              errorText.show();
-              errorText.text("Required");
               requiredError = true;
-            } else {
-              inputObj.removeClass('input-error');
-              errorText.hide();
+              errorMap[fieldName] = "required";
             }
           }
           if (requiredError == false && fields[i].validation != null && fields[i].validation != "") {
             let validateParams = JSON.parse(fields[i].validation);
             if (validateParams.regex != null && validateParams.regex != ""){
               let regex = new RegExp(validateParams.regex);
-              if (input != null && regex != null && regex.exec(input) != null) {
-                inputObj.removeClass('input-error');
-                errorText.hide();
+              if (regex != null && regex.exec(fieldValue) != null) {
+                // do nothing
               } else {
                 isValid = false;
-                inputObj.addClass('input-error');
-                inputObj.focus();
-                errorText.show();
-                errorText.text(validateParams.errorMsg);
+                errorMap[fieldName] = validateParams.errorMsg;
               }
-
             }
           }
           break;
@@ -73,13 +59,10 @@ const validateFields = (fields,lang,languages,group,prefix) => {
             if (prefix != null) {
               fieldName = prefix.concat("-").concat(fieldName);
             }
-            let inputObj = jQuery("#".concat(fieldName));
-            let input = inputObj.val();
-            if (input == null || (input != null && input == "")){
+            let fieldValue = state[fieldName];
+            if (fieldValue == null || (fieldValue != null && fieldValue == "")){
               isValid = false;
-              inputObj.addClass('input-error');
-            } else {
-              inputObj.removeClass('input-error');
+              errorMap[fieldName] = "required";
             }
           }
           break;
@@ -94,16 +77,13 @@ const validateFields = (fields,lang,languages,group,prefix) => {
               if (prefix != null) {
                 fieldName = prefix.concat("-").concat(fieldName);
               }
-              let inputObj = jQuery("#".concat(fieldName).concat("-").concat(languages[j].code));
+              let fieldValue = state[fieldName.concat("-").concat(languages[j].code)];
               if (languages[j].title.langTexts != null){
                 for(let k=0;k<languages[j].title.langTexts.length;k++){
                   if (languages[j].title.langTexts[k].lang == lang && languages[j].code == lang){
-                    let input = inputObj.val();
-                    if (input == null || (input != null && input == "")){
+                    if (fieldValue == null || (fieldValue != null && fieldValue == "")){
                       isValid = false;
-                      inputObj.addClass('input-error');
-                    } else {
-                      inputObj.removeClass('input-error');
+                      errorMap[fieldName] = "required";
                     }
                   }
                 }
@@ -118,13 +98,10 @@ const validateFields = (fields,lang,languages,group,prefix) => {
             if (prefix != null) {
               fieldName = prefix.concat("-").concat(fieldName);
             }
-            let inputObj = jQuery("#".concat(fieldName));
-            let input = inputObj.val();
-            if (input == null || (input != null && input == "")){
+            let fieldValue = state[fieldName];
+            if (fieldValue == null || (fieldValue != null && fieldValue == "")){
               isValid = false;
-              inputObj.addClass('input-error');
-            } else {
-              inputObj.removeClass('input-error');
+              errorMap[fieldName] = "required";
             }
           }
           break;
@@ -136,10 +113,10 @@ const validateFields = (fields,lang,languages,group,prefix) => {
       }
     }
   }
-  return isValid;
+  return {isValid:isValid,errorMap:errorMap};
 }; // validateFields
 
-const marshallFields = (fields,myObj,languages,prefix) => {
+const marshallFields = (state,fields,myObj,languages,prefix) => {
   let resultObj = {};
   for( let i = 0, len = fields.length; i < len; i++ ) {
     if(fields[i].rendered) {
@@ -154,7 +131,7 @@ const marshallFields = (fields,myObj,languages,prefix) => {
           for(let j=0;j<languages.length;j++){
             if (languages[j].title.langTexts != null){
               for(let k=0;k<languages[j].title.langTexts.length;k++){
-                ltxt[languages[j].code] = jQuery("#".concat(fieldName).concat("-").concat(languages[j].code)).val();
+                ltxt[languages[j].code] = state[fieldName.concat("-").concat(languages[j].code)];
               }
             }
           }
@@ -162,7 +139,7 @@ const marshallFields = (fields,myObj,languages,prefix) => {
           break;
         }
         case "TXT": {
-          resultObj[fields[i].name] = jQuery("#".concat(fieldName)).val();
+          resultObj[fields[i].name] = state[fieldName];
           break;
         }
         case "TXTA": {
@@ -205,7 +182,7 @@ const marshallFields = (fields,myObj,languages,prefix) => {
           break;
         }
         case "MDLSNG": {
-          resultObj[fields[i].name] = jQuery("#".concat(fieldName)).val();
+          resultObj[fields[i].name] = state[fieldName];
           break;
         }
       }

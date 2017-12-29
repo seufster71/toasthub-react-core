@@ -4,16 +4,19 @@ import callService from '../api/Api';
 import Login from '../../usermanagementViews/Login';
 import utils from '../common/utils';
 import {connect} from 'react-redux';
+import * as loginActions from './loginActions';
+import {bindActionCreators} from 'redux';
 
 class LoginContainer extends Component {
     constructor(props) {
       super(props);
 			this.state = {
-        loginRegistration:"login",
+        loginRegistration:"login"
       };
       this.showLogin = this.showLogin.bind(this);
       this.showRegistration = this.showRegistration.bind(this);
       this.fieldChangeEvent = this.fieldChangeEvent.bind(this);
+      this.fieldBlurEvent = this.fieldBlurEvent.bind(this);
       this.buttonClick = this.buttonClick.bind(this);
     }
 
@@ -29,6 +32,13 @@ class LoginContainer extends Component {
       console.log("field changed "+e.target.id);
     }
 
+    fieldBlurEvent(e) {
+      console.log("field blur "+e.target.id);
+      let myState = {};
+        myState[e.target.id] = e.target.value;
+      this.setState(Object.assign({}, this.state, myState));
+    }
+
     buttonClick(e) {
     //  debugger;
       console.log("button clicked "+e.target.id);
@@ -39,39 +49,21 @@ class LoginContainer extends Component {
           console.log("value = "+object.value);
         }
       } else if (e.target.id === "LOGIN_FORM_SUBMIT_BUTTON") {
-        let loginFields = this.props.appForms.LOGIN_FORM;
-        for (var l = 0; l < loginFields.length; l++) {
-          let object = document.getElementById(loginFields[l].name);
-          console.log("value = "+object.value);
+        let validate = utils.validateFields(this.state,this.props.appForms.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES,"MAIN");
+        if (validate.isValid == true) {
+          let inputFields = utils.marshallFields(this.state,this.props.appForms.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES);
+          let params = {};
+          let tokenParam = utils.getQueryStringValue("token");
+          if (tokenParam != null){
+            params.token = tokenParam;
+          }
+          this.props.actions.authenticate(inputFields);
         }
       }
     }
 
-    authenticate() {
-      //this.statusPanelClear("login-status");
-      let valid = utils.validateFields(self.pageFormFields.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES,"MAIN","LOGIN_FORM");
-      if (valid == true) {
-        let result = utils.marshallFields(self.pageFormFields.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES,"LOGIN_FORM");
-        let params = {};
-        let tokenParam = utils.getQueryStringValue("token");
-        if (tokenParam != null){
-          params.token = tokenParam;
-        }
-
-        let requestParams = {};
-        requestParams.action = "LOGINAUTHENTICATE";
-        requestParams.service = "LOGIN_SVC";
-        params.requestParams = requestParams;
-        params.URI = '/api/login/callService';
-        params.responseCallBack = (params) => { this.processAuthenticate(params); };
-        params.appForms = ["LOGIN_FORM"];
-        params.inputFields = result;
-        params.ajaxEndpoint = "/authenticate";
-        callService(params);
-      }
-    } // authenticate
-
     render() {
+      console.log("Render login");
       if (this.props.appForms.LOGIN_FORM != null && this.props.appTexts.LOGIN_FORM != null
         && this.props.appForms.REGISTRATION_FORM && this.props.appTexts.REGISTRATION_FORM) {
         return (
@@ -85,6 +77,7 @@ class LoginContainer extends Component {
             onChangeLogin={this.showLogin}
             onChangeRegistration={this.showRegistration}
             fieldChangeEvent={this.fieldChangeEvent}
+            fieldBlurEvent={this.fieldBlurEvent}
             buttonClick={this.buttonClick}/>
         );
       } else {
@@ -103,6 +96,7 @@ LoginContainer.propTypes = {
   appLabels: PropTypes.object,
   appOptions: PropTypes.object,
   appGlobal: PropTypes.object,
+  actions: PropTypes.object,
   lang: PropTypes.string
 };
 
@@ -111,4 +105,8 @@ function mapStateToProps(state, ownProps) {
     appOptions:state.appPrefs.appOptions, lang:state.lang, appGlobal:state.appPrefs.appGlobal};
 }
 
-export default connect(mapStateToProps)(LoginContainer);
+function mapDispatchToProps(dispatch) {
+  return { actions:bindActionCreators(loginActions,dispatch) };
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(LoginContainer);
