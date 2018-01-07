@@ -9,6 +9,9 @@ export function loadInitMember(responseJson) {
   return { type: "LOAD_INIT_MEMBER", responseJson };
 }
 
+export function navChange(params) {
+  return { type: "SAVE_NAV_CHANGE", params };
+}
 
 // thunk
 export function initPublic() {

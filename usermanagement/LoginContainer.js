@@ -82,7 +82,7 @@ class LoginContainer extends Component {
         );
       } else {
         return (
-          <div/>
+          <div> Empty </div>
         );
       }
 

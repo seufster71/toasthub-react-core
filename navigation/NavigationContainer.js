@@ -9,13 +9,8 @@ class NavigationContainer extends Component {
 		super(props);
 
 	}
-
-	navClick() {
-
-	}
-
+	
 	render() {
-		console.log("render navigationcontainer " + this.props.appPrefs);
 		let menus = {};
 		if (this.props.menus != null) {
 			menus = this.props.menus;
@@ -36,7 +31,6 @@ NavigationContainer.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-	console.log(state);
   return {menus:state.appMenus.menus, lang:state.lang, appPrefs:state.appPrefs, appGlobal:state.appPrefs.appGlobal};
 }
 
