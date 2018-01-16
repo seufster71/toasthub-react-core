@@ -62,8 +62,22 @@ export default function appPrefReducer(state = {}, action) {
         return state;
       }
     }
-    case 'LOAD_INIT_MEMBER':
-      return state;
+    case 'LOAD_INIT_MEMBER':{
+      if (action.responseJson != null && action.responseJson.params != null) {
+        let myState = {};
+        if (state.appTests != null) {
+          myState = Object.assign({}, state);
+        } else {
+          myState.appTexts = {};
+        }
+        if (action.responseJson.params.appPageTexts.MEMBER_PAGE != null) {
+          myState.appTexts.MEMBER_PAGE = action.responseJson.params.appPageTexts.MEMBER_PAGE;
+        }
+        return Object.assign({}, state, myState);
+      } else {
+        return state;
+      }
+    }
     case 'SAVE_NAV_CHANGE': {
       let myState = {};
       if(action.params != null) {

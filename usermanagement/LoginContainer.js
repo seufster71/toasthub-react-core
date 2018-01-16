@@ -11,7 +11,8 @@ class LoginContainer extends Component {
     constructor(props) {
       super(props);
 			this.state = {
-        loginRegistration:"login"
+        loginRegistration:"login",
+        errorMap:{}
       };
       this.showLogin = this.showLogin.bind(this);
       this.showRegistration = this.showRegistration.bind(this);
@@ -34,6 +35,7 @@ class LoginContainer extends Component {
 
     fieldBlurEvent(e) {
       console.log("field blur "+e.target.id);
+      // save to state
       let myState = {};
         myState[e.target.id] = e.target.value;
       this.setState(Object.assign({}, this.state, myState));
@@ -42,15 +44,9 @@ class LoginContainer extends Component {
     buttonClick(e) {
     //  debugger;
       console.log("button clicked "+e.target.id);
-      if(e.target.id === "REGISTRATION_FORM_SUBMIT_BUTTON") {
-        let registrationFields = this.props.appForms.REGISTRATION_FORM;
-        for (var r = 0; r < registrationFields.length; r++) {
-          let object = document.getElementById(registrationFields[r].name);
-          console.log("value = "+object.value);
-        }
-      } else if (e.target.id === "LOGIN_FORM_SUBMIT_BUTTON") {
-        let validate = utils.validateFields(this.state,this.props.appForms.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES,"MAIN");
-        if (validate.isValid == true) {
+      if (e.target.id === "LOGIN_FORM_SUBMIT_BUTTON") {
+        let validateLogin = utils.validateFields(this.state,this.props.appForms.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES,"MAIN");
+        if (validateLogin.isValid == true) {
           let inputFields = utils.marshallFields(this.state,this.props.appForms.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES);
           let params = {};
           let tokenParam = utils.getQueryStringValue("token");
@@ -58,6 +54,21 @@ class LoginContainer extends Component {
             params.token = tokenParam;
           }
           this.props.actions.authenticate(inputFields);
+        } else {
+          // show error
+
+        }
+      } else if (e.target.id === "REGISTRATION_FORM_SUBMIT_BUTTON") {
+        let validateReg = utils.validateFields(this.state,this.props.appForms.REGISTRATION_FORM,this.props.lang,this.props.appGlobal.LANGUAGES,"MAIN");
+        if (validateReg.isValid == true) {
+          let inputFields = utils.marshallFields(this.state,this.props.appForms.REGISTRATION_FORM,this.props.lang,this.props.appGlobal.LANGUAGES);
+          this.props.actions.register(inputFields);
+        } else {
+          // show error
+          let myState = {};
+            myState.isValid = validateReg.isValid;
+            myState.errorMap = validateReg.errorMap;
+          this.setState(Object.assign({}, this.state, myState));
         }
       }
     }
@@ -68,6 +79,7 @@ class LoginContainer extends Component {
         && this.props.appForms.REGISTRATION_FORM && this.props.appTexts.REGISTRATION_FORM) {
         return (
           <Login view={this.state.loginRegistration}
+            errorMap={this.state.errorMap}
             loginFields={this.props.appForms.LOGIN_FORM}
             loginTexts={this.props.appTexts.LOGIN_FORM}
             loginLabels={this.props.appLabels.LOGIN_FORM}
@@ -102,7 +114,7 @@ LoginContainer.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {appForms:state.appPrefs.appForms, appLabels:state.appPrefs.appLabels, appTexts:state.appPrefs.appTexts,
-    appOptions:state.appPrefs.appOptions, lang:state.lang, appGlobal:state.appPrefs.appGlobal};
+    appOptions:state.appPrefs.appOptions, lang:state.appPrefs.lang, appGlobal:state.appPrefs.appGlobal};
 }
 
 function mapDispatchToProps(dispatch) {

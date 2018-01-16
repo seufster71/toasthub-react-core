@@ -21,6 +21,7 @@ export default function callService(params) {
 		return new Promise((resolve,reject) => {
 			fetch(params.URI,{
 				method: 'POST',
+				credentials: 'same-origin',
 				headers: { "Content-type": "application/json" },
 				body: JSON.stringify({params:params.requestParams})
 			})

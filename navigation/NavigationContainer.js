@@ -9,7 +9,7 @@ class NavigationContainer extends Component {
 		super(props);
 
 	}
-	
+
 	render() {
 		let menus = {};
 		if (this.props.menus != null) {
@@ -31,7 +31,7 @@ NavigationContainer.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-  return {menus:state.appMenus.menus, lang:state.lang, appPrefs:state.appPrefs, appGlobal:state.appPrefs.appGlobal};
+  return {menus:state.appMenus, lang:state.lang, appPrefs:state.appPrefs, appGlobal:state.appPrefs.appGlobal};
 }
 
 export default connect(mapStateToProps)(NavigationContainer);

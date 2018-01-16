@@ -3,66 +3,58 @@ import PropTypes from 'prop-types';
 
 
 const validateFields = (state,fields,lang,languages,group,prefix) => {
-  let isValid = true;
-  let errorMap = {};
+  let isValidTmp = true;
+  let errorMapTmp = {};
   for( let i = 0, len = fields.length; i < len; i++ ) {
-    if(fields[i].rendered ) {
-      switch (fields[i].fieldType) {
+    let field = fields[i];
+    if(field.rendered) {
+      let fieldName = field.name;
+      if (prefix != null) {
+        fieldName = prefix.concat("-").concat(fieldName);
+      }
+      switch (field.fieldType) {
         case "MTXT": {
-          if (fields[i].required){
+          if (field.required){
             for(let j=0;j<languages.length;j++){
-              let fieldName = fields[i].name;
-              if (prefix != null) {
-                fieldName = prefix.concat("-").concat(fieldName);
-              }
-              let fieldValue = state[fieldName.concat("-").concat(languages[j].code)];
-              if (fieldValue == null || (fieldValue != null && fieldValue == "")){
-                  isValid = false;
-                  errorMap[fieldName.concat("-").concat(languages[j].code)] = "required";
+              let mtxtValue = state[fieldName.concat("-").concat(languages[j].code)];
+              if (mtxtValue == null || (mtxtValue != null && mtxtValue == "")){
+                  isValidTmp = false;
+                  errorMapTmp[fieldName.concat("-").concat(languages[j].code)] = "required";
               }
             }
           }
           break;
         }
         case "TXT": {
-          let fieldName = fields[i].name;
-          if (prefix != null) {
-            fieldName = prefix.concat("-").concat(fieldName);
-          }
-          let fieldValue = state[fieldName];
-
+          let txtValue = state[fieldName];
           let requiredError = false;
-          if (fields[i].required){
-            if (fieldValue == null || (fieldValue != null && fieldValue == "")){
-              isValid = false;
+          if (field.required){
+            if (txtValue == null || (txtValue != null && txtValue == "")){
+              isValidTmp = false;
               requiredError = true;
-              errorMap[fieldName] = "required";
+              errorMapTmp[name] = "required";
             }
           }
-          if (requiredError == false && fields[i].validation != null && fields[i].validation != "") {
-            let validateParams = JSON.parse(fields[i].validation);
+          if (requiredError == false && field.validation != null && field.validation != "") {
+            let validateParams = JSON.parse(field.validation);
             if (validateParams.regex != null && validateParams.regex != ""){
               let regex = new RegExp(validateParams.regex);
-              if (regex != null && regex.exec(fieldValue) != null) {
+              if (regex != null && regex.exec(txtValue) != null) {
                 // do nothing
               } else {
-                isValid = false;
-                errorMap[fieldName] = validateParams.errorMsg;
+                isValidTmp = false;
+                errorMapTmp[fieldName] = validateParams.errorMsg;
               }
             }
           }
           break;
         }
         case "TXTA": {
-          if (fields[i].required){
-            let fieldName = fields[i].name;
-            if (prefix != null) {
-              fieldName = prefix.concat("-").concat(fieldName);
-            }
-            let fieldValue = state[fieldName];
-            if (fieldValue == null || (fieldValue != null && fieldValue == "")){
-              isValid = false;
-              errorMap[fieldName] = "required";
+          if (field.required){
+            let txtaValue = state[fieldName];
+            if (txtaValue == null || (txtaValue != null && txtaValue == "")){
+              isValidTmp = false;
+              errorMapTmp[fieldName] = "required";
             }
           }
           break;
@@ -71,19 +63,15 @@ const validateFields = (state,fields,lang,languages,group,prefix) => {
           break;
         }
         case "LTXT": {
-          if (fields[i].required){
+          if (field.required){
             for(let j=0;j<languages.length;j++){
-              let fieldName = fields[i].name;
-              if (prefix != null) {
-                fieldName = prefix.concat("-").concat(fieldName);
-              }
-              let fieldValue = state[fieldName.concat("-").concat(languages[j].code)];
+              let ltxtValue = state[fieldName.concat("-").concat(languages[j].code)];
               if (languages[j].title.langTexts != null){
                 for(let k=0;k<languages[j].title.langTexts.length;k++){
                   if (languages[j].title.langTexts[k].lang == lang && languages[j].code == lang){
-                    if (fieldValue == null || (fieldValue != null && fieldValue == "")){
-                      isValid = false;
-                      errorMap[fieldName] = "required";
+                    if (ltxtValue == null || (ltxtValue != null && ltxtValue == "")){
+                      isValidTmp = false;
+                      errorMapTmp[fieldName] = "required";
                     }
                   }
                 }
@@ -93,15 +81,11 @@ const validateFields = (state,fields,lang,languages,group,prefix) => {
           break;
         }
         case "MDLSNG": {
-          if (fields[i].required){
-            let fieldName = fields[i].name;
-            if (prefix != null) {
-              fieldName = prefix.concat("-").concat(fieldName);
-            }
-            let fieldValue = state[fieldName];
-            if (fieldValue == null || (fieldValue != null && fieldValue == "")){
-              isValid = false;
-              errorMap[fieldName] = "required";
+          if (field.required){
+            let mdlValue = state[fieldName];
+            if (mdlValue == null || (mdlValue != null && mdlValue == "")){
+              isValidTmp = false;
+              errorMapTmp[fieldName] = "required";
             }
           }
           break;
@@ -113,15 +97,16 @@ const validateFields = (state,fields,lang,languages,group,prefix) => {
       }
     }
   }
-  return {isValid:isValid,errorMap:errorMap};
+  return {isValid:isValidTmp,errorMap:errorMapTmp};
 }; // validateFields
 
 const marshallFields = (state,fields,myObj,languages,prefix) => {
   let resultObj = {};
   for( let i = 0, len = fields.length; i < len; i++ ) {
-    if(fields[i].rendered) {
+    let field = fields[i];
+    if(field.rendered) {
       let input = "";
-      let fieldName = fields[i].name;
+      let fieldName = field.name;
       if (prefix != null) {
         fieldName = prefix.concat("-").concat(fieldName);
       }

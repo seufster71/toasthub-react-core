@@ -16,6 +16,7 @@ export default function loginReducer(state = {}, action) {
       }
       return Object.assign({}, state.appPrefs, myState);
     }
+    
     default:
       return state;
   }

@@ -44,10 +44,7 @@ export function initMember() {
     requestParams.action = "INIT";
     requestParams.service = "MEMBER_SVC";
     //requestParams.appForms = new Array("LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
-    //requestParams.appTexts = new Array("GLOBAL_PAGE","LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
-    //requestParams.appLabels = new Array("LOGIN_FORM","REGISTRATION_FORM");
-    //requestParams.appOptions = new Array("REGISTRATION_FORM");
-    //requestParams.appGlobal = new Array("LANGUAGES");
+    requestParams.appTexts = new Array("MEMBER_PAGE");
     requestParams.menuNames = new Array("MEMBER_MENU_RIGHT");
     let params = {};
     params.requestParams = requestParams;
