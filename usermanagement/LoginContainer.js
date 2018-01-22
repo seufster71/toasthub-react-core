@@ -35,9 +35,20 @@ class LoginContainer extends Component {
 
     fieldBlurEvent(e) {
       console.log("field blur "+e.target.id);
-      // save to state
+      let target = e.target.id.split("-");
       let myState = {};
-        myState[e.target.id] = e.target.value;
+
+      if (target[0] === "REGISTRATION_FORM") {
+        // validate field
+        let targetObj = {};
+        targetObj[e.target.id] = e.target.value;
+        let validateReg = utils.validateFields({state:targetObj,fields:this.props.appForms[target[0]],lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:target[0],fieldList:[target[1]]});
+        myState.isValid = validateReg.isValid;
+        let errorMap = Object.assign({}, this.state.errorMap, validateReg.errorMap);
+        myState.errorMap = errorMap;
+      }
+      // save to state
+      myState[e.target.id] = e.target.value;
       this.setState(Object.assign({}, this.state, myState));
     }
 
@@ -45,7 +56,7 @@ class LoginContainer extends Component {
     //  debugger;
       console.log("button clicked "+e.target.id);
       if (e.target.id === "LOGIN_FORM_SUBMIT_BUTTON") {
-        let validateLogin = utils.validateFields(this.state,this.props.appForms.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES,"MAIN");
+        let validateLogin = utils.validateFields({state:this.state,fields:this.props.appForms.LOGIN_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN"});
         if (validateLogin.isValid == true) {
           let inputFields = utils.marshallFields(this.state,this.props.appForms.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES);
           let params = {};
@@ -59,7 +70,7 @@ class LoginContainer extends Component {
 
         }
       } else if (e.target.id === "REGISTRATION_FORM_SUBMIT_BUTTON") {
-        let validateReg = utils.validateFields(this.state,this.props.appForms.REGISTRATION_FORM,this.props.lang,this.props.appGlobal.LANGUAGES,"MAIN");
+        let validateReg = utils.validateFields({state:this.state,fields:this.props.appForms.REGISTRATION_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:"REGISTRATION_FORM"});
         if (validateReg.isValid == true) {
           let inputFields = utils.marshallFields(this.state,this.props.appForms.REGISTRATION_FORM,this.props.lang,this.props.appGlobal.LANGUAGES);
           this.props.actions.register(inputFields);
