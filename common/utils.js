@@ -172,7 +172,7 @@ const validateFieldTXT = (state, field, fieldName) => {
     if (txtValue == null || (txtValue != null && txtValue == "")){
       isValidTXT = false;
       requiredError = true;
-      errorMapTXT[field.name] = "required";
+      errorMapTXT[field.name] = "Required";
     } else {
       errorMapTXT[field.name] = "";
     }
@@ -182,8 +182,20 @@ const validateFieldTXT = (state, field, fieldName) => {
     if (validateParams.regex != null && validateParams.regex != ""){
       let regex = new RegExp(validateParams.regex);
       if (regex != null && regex.exec(txtValue) != null) {
+        // success
         errorMapTXT[field.name] = "";
       } else {
+        // fail
+        if (validateParams.onFail != null) {
+          let failRegexs = validateParams.onFail;
+          for(let j = 0; j < failRegexs.length; j++) {
+            let fr = new RegExp(failRegexs[j].regex);
+            if (fr != null && fr.exec(txtValue) == null) {
+              // fail
+              errorMapTXT[failRegexs[j].link] = "ERROR";
+            }
+          }
+        }
         isValidTXT = false;
         errorMapTXT[field.name] = validateParams.errorMsg;
       }
