@@ -78,13 +78,6 @@ export default function appPrefReducer(state = {}, action) {
         return state;
       }
     }
-    case 'SAVE_NAV_CHANGE': {
-      let myState = {};
-      if(action.params != null) {
-        myState.currentPage = action.params.currentPage;
-      }
-      return Object.assign({}, state, myState);
-    }
     case 'SAVE_APPTEXTS':
       return state.appTexts;
     case 'SAVE_APPLABELS':

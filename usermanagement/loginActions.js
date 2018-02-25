@@ -8,14 +8,6 @@ export function saveLang() {
   return { type:'SAVE_LANG' };
 }
 
-export function processAuthentication(params) {
-  return { type:'SAVE_NAV_CHANGE', params };
-}
-
-export function processRegistration(params) {
-  return { type:'SAVE_NAV_CHANGE', params };
-}
-
 // thunks
 export function authenticate(inputFields) {
   return function(dispatch) {
@@ -29,17 +21,22 @@ export function authenticate(inputFields) {
     params.URI = '/api/login/authenticate';
 
     return callService(params).then( (responseJson) => {
-      let currentPage = "";
-      if (responseJson != null && responseJson.params != null && responseJson.params.status != null
-      && responseJson.params.status.info != null) {
-        let status = responseJson.params.status.info;
-        for (var i = 0; i < status.length; i++) {
-          if (status[i].code === "success") {
-            currentPage = "member";
+      let params = {};
+      if (responseJson != null && responseJson.params != null && responseJson.params.status != null) {
+        if (responseJson.params.status.error != null) {
+          dispatch({type:'SHOW_STATUS_ERROR',error:responseJson.params.status.error});
+        } else if (responseJson.params.status.info != null) {
+          let status = responseJson.params.status.info;
+          for (let i = 0; i < status.length; i++) {
+            if (status[i].code === "success") {
+              params.currentPage = "member";
+            }
           }
+          dispatch({type:'PROCESS_NAV_CHANGE',params});
+          dispatch({type:'SHOW_STATUS',info:responseJson.params.status.info});
         }
       }
-      dispatch(processAuthentication({currentPage:currentPage}));
+
     }).catch(error => {
       throw(error);
     });
@@ -59,19 +56,22 @@ export function register(inputFields) {
     params.URI = '/api/login/callService';
 
     return callService(params).then( (responseJson) => {
-      let currentPage = "";
-      if (responseJson != null && responseJson.params != null && responseJson.params.status != null
-      && responseJson.params.status.info != null) {
-        let status = responseJson.params.status.info;
-        for (var i = 0; i < status.length; i++) {
-          if (status[i].code === "success") {
-            currentPage = "registerEmailCheck";
-          } else {
-            currentPage = "login";
+      let params = {};
+      if (responseJson != null && responseJson.params != null && responseJson.params.status != null) {
+        if (responseJson.params.status.error != null) {
+          dispatch({type:'SHOW_STATUS_ERROR',error:responseJson.params.status.error});
+        } else if (responseJson.params.status.info != null) {
+          let status = responseJson.params.status.info;
+          for (let i = 0; i < status.length; i++) {
+            if (status[i].code === "success") {
+              params.currentPage = "login";
+            }
           }
+          dispatch({type:'PROCESS_NAV_CHANGE',params});
+          dispatch({type:'SHOW_STATUS',info:responseJson.params.status.info});
         }
       }
-      dispatch(processRegistration({currentPage:currentPage}));
+
     }).catch(error => {
       throw(error);
     });

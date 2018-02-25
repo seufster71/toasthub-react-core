@@ -56,9 +56,9 @@ class LoginContainer extends Component {
     //  debugger;
       console.log("button clicked "+e.target.id);
       if (e.target.id === "LOGIN_FORM_SUBMIT_BUTTON") {
-        let validateLogin = utils.validateFields({state:this.state,fields:this.props.appForms.LOGIN_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN"});
+        let validateLogin = utils.validateFields({state:this.state,fields:this.props.appForms.LOGIN_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:"LOGIN_FORM"});
         if (validateLogin.isValid == true) {
-          let inputFields = utils.marshallFields(this.state,this.props.appForms.LOGIN_FORM,this.props.lang,this.props.appGlobal.LANGUAGES);
+          let inputFields = utils.marshallFields({state:this.state,fields:this.props.appForms.LOGIN_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,prefix:"LOGIN_FORM"});
           let params = {};
           let tokenParam = utils.getQueryStringValue("token");
           if (tokenParam != null){
@@ -67,12 +67,12 @@ class LoginContainer extends Component {
           this.props.actions.authenticate(inputFields);
         } else {
           // show error
-
+          console.log("validation issue ");
         }
       } else if (e.target.id === "REGISTRATION_FORM_SUBMIT_BUTTON") {
         let validateReg = utils.validateFields({state:this.state,fields:this.props.appForms.REGISTRATION_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:"REGISTRATION_FORM"});
         if (validateReg.isValid == true) {
-          let inputFields = utils.marshallFields(this.state,this.props.appForms.REGISTRATION_FORM,this.props.lang,this.props.appGlobal.LANGUAGES);
+          let inputFields = utils.marshallFields({state:this.state,fields:this.props.appForms.REGISTRATION_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,prefix:"REGISTRATION_FORM"});
           this.props.actions.register(inputFields);
         } else {
           // show error
@@ -105,7 +105,7 @@ class LoginContainer extends Component {
         );
       } else {
         return (
-          <div> Empty </div>
+          <div> App Forms are missing </div>
         );
       }
 

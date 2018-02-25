@@ -26,7 +26,7 @@ const validateFields = (params) => {
           break;
         }
         case "TXT": {
-          let resultTXT = validateFieldTXT(params.state, field, fieldName);
+          let resultTXT = validateFieldTXT(params, field, fieldName);
           if (resultTXT.isValid == false) {
             isValidTmp = resultTXT.isValid;
           }
@@ -70,74 +70,79 @@ const validateFields = (params) => {
   return {isValid:isValidTmp,errorMap:errorMapTmp};
 }; // validateFields
 
-const marshallFields = (state,fields,myObj,languages,prefix) => {
+const marshallFields = (params) => {
+  //state,fields,myObj,languages,prefix
   let resultObj = {};
-  for( let i = 0, len = fields.length; i < len; i++ ) {
-    let field = fields[i];
+  for( let i = 0, len = params.fields.length; i < len; i++ ) {
+    let field = params.fields[i];
     if(field.rendered) {
       let input = "";
       let fieldName = field.name;
-      if (prefix != null) {
-        fieldName = prefix.concat("-").concat(fieldName);
+      if (params.prefix != null) {
+        fieldName = params.prefix.concat("-").concat(fieldName);
       }
-      switch (fields[i].fieldType) {
+      switch (params.fields[i].fieldType) {
         case "MTXT": {
           let ltxt = {};
-          for(let j=0;j<languages.length;j++){
-            if (languages[j].title.langTexts != null){
-              for(let k=0;k<languages[j].title.langTexts.length;k++){
-                ltxt[languages[j].code] = state[fieldName.concat("-").concat(languages[j].code)];
+          for(let j=0;j<params.languages.length;j++){
+            if (params.languages[j].title.langTexts != null){
+              for(let k=0;k<params.languages[j].title.langTexts.length;k++){
+                ltxt[params.languages[j].code] = params.state[fieldName.concat("-").concat(params.languages[j].code)];
               }
             }
           }
-          resultObj[fields[i].name] = ltxt;
+          resultObj[params.fields[i].name] = ltxt;
           break;
         }
         case "TXT": {
-          resultObj[fields[i].name] = state[fieldName];
+          resultObj[params.fields[i].name] = params.state[fieldName];
           break;
         }
         case "TXTA": {
           break;
         }
         case "BLN": {
-          if (fields[i].htmlType == "radioH"){
-            resultObj[fields[i].name] = jQuery('#radio-'.concat(fieldName).concat(' label.active input')).val();
+          if (params.fields[i].htmlType == "radioH"){
+            resultObj[params.fields[i].name] = jQuery('#radio-'.concat(fieldName).concat(' label.active input')).val();
           }
           break;
         }
         case "MBLN": {
-          if (fields[i].htmlType == "radioH"){
+          if (params.fields[i].htmlType == "radioH"){
             let ltxt = {};
-            for(let j=0;j<languages.length;j++){
-              if (languages[j].title.langTexts != null){
-                for(let k=0;k<languages[j].title.langTexts.length;k++){
-                  ltxt[languages[j].code] = jQuery("#radio-".concat(fieldName).concat("-").concat(languages[j].code).concat(' label.active input')).val();
+            for(let j=0;j<params.languages.length;j++){
+              if (params.languages[j].title.langTexts != null){
+                for(let k=0;k<params.languages[j].title.langTexts.length;k++){
+                  ltxt[params.languages[j].code] = jQuery("#radio-".concat(fieldName).concat("-").concat(params.languages[j].code).concat(' label.active input')).val();
                 }
               }
             }
-            resultObj[fields[i].name] = ltxt;
+            resultObj[params.fields[i].name] = ltxt;
           }
           break;
         }
         case "SLT": {
-          resultObj[fields[i].name] = jQuery("#".concat(fieldName)).val();
+          resultObj[params.fields[i].name] = jQuery("#".concat(fieldName)).val();
           break;
         }
         case "LTXT": {
           let ltxt = {};
-          for(let j=0;j<languages.length;j++){
-            if (languages[j].title.langTexts != null){
-              for(let k=0;k<languages[j].title.langTexts.length;k++){
-                ltxt[languages[j].code] = jQuery("#".concat(fieldName).concat("-").concat(languages[j].code)).val();
+          for(let j=0;j<params.languages.length;j++){
+            if (params.languages[j].title.langTexts != null){
+              for(let k=0;k<params.languages[j].title.langTexts.length;k++){
+                ltxt[params.languages[j].code] = jQuery("#".concat(fieldName).concat("-").concat(params.languages[j].code)).val();
               }
             }
           }
-          resultObj[fields[i].name] = ltxt;
+          resultObj[params.fields[i].name] = ltxt;
           break;
         }
         case "MDLSNG": {
-          resultObj[fields[i].name] = state[fieldName];
+          resultObj[params.fields[i].name] = params.state[fieldName];
+          break;
+        }
+        default: {
+
           break;
         }
       }
@@ -163,9 +168,9 @@ const validateFieldMTXT = (state, field, languages) => {
   return {isValid:isValidMTXT, errorMap:errorMapMTXT};
 };
 
-const validateFieldTXT = (state, field, fieldName) => {
+const validateFieldTXT = (params, field, fieldName) => {
   let isValidTXT = true;
-  let txtValue = state[fieldName];
+  let txtValue = params.state[fieldName];
   let requiredError = false;
   let errorMapTXT = {};
   if (field.required){
@@ -198,6 +203,31 @@ const validateFieldTXT = (state, field, fieldName) => {
         }
         isValidTXT = false;
         errorMapTXT[field.name] = validateParams.errorMsg;
+      }
+    } else if (validateParams.operator != null) {
+      switch (validateParams.operator) {
+        case "equals": {
+          if (validateParams.matchField != null) {
+            let matchField = "";
+            if (params.prefix != null) {
+              matchField = params.prefix.concat("-").concat(validateParams.matchField);
+            }
+            let theField = document.getElementById(matchField);
+            if (theField != null && txtValue === theField.value){
+              // success
+              errorMapTXT[field.name] = "";
+            } else {
+              // fail
+              isValidTXT = false;
+              errorMapTXT[field.name] = validateParams.errorMsg;
+            }
+          }
+          break;
+        }
+        default: {
+
+          break;
+        }
       }
     }
   }
