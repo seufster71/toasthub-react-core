@@ -11,22 +11,27 @@ class LoginContainer extends Component {
     constructor(props) {
       super(props);
 			this.state = {
-        loginRegistration:"login",
+        view:"login",
         errorMap:{}
       };
       this.showLogin = this.showLogin.bind(this);
       this.showRegistration = this.showRegistration.bind(this);
+      this.showForgotPassword = this.showForgotPassword.bind(this);
       this.fieldChangeEvent = this.fieldChangeEvent.bind(this);
       this.fieldBlurEvent = this.fieldBlurEvent.bind(this);
       this.buttonClick = this.buttonClick.bind(this);
     }
 
     showRegistration() {
-      this.setState({loginRegistration:'registration'});
+      this.setState({view:'registration'});
     }
 
     showLogin() {
-      this.setState({loginRegistration:'login'});
+      this.setState({view:'login'});
+    }
+
+    showForgotPassword() {
+      this.setState({view:'forgotPassword'});
     }
 
     fieldChangeEvent(e) {
@@ -53,6 +58,7 @@ class LoginContainer extends Component {
     }
 
     buttonClick(e) {
+      e.preventDefault();
     //  debugger;
       console.log("button clicked "+e.target.id);
       if (e.target.id === "LOGIN_FORM_SUBMIT_BUTTON") {
@@ -81,24 +87,34 @@ class LoginContainer extends Component {
             myState.errorMap = validateReg.errorMap;
           this.setState(Object.assign({}, this.state, myState));
         }
+      } else if (e.target.id === "FORGOTPASSWORD_FORM_SUBMIT_BUTTON") {
+        let validateReg = utils.validateFields({state:this.state,fields:this.props.appForms.FORGOTPASSWORD_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:"FORGOTPASSWORD_FORM"});
+        if (validateReg.isValid == true) {
+          let inputFields = utils.marshallFields({state:this.state,fields:this.props.appForms.FORGOTPASSWORD_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,prefix:"FORGOTPASSWORD_FORM"});
+          this.props.actions.forgotPassword(inputFields);
+        } else {
+          // show error
+          let myState = {};
+            myState.isValid = validateReg.isValid;
+            myState.errorMap = validateReg.errorMap;
+          this.setState(Object.assign({}, this.state, myState));
+        }
       }
     }
 
     render() {
       console.log("Render login");
-      if (this.props.appForms.LOGIN_FORM != null && this.props.appTexts.LOGIN_FORM != null
-        && this.props.appForms.REGISTRATION_FORM && this.props.appTexts.REGISTRATION_FORM) {
+      if (this.props.appForms != null && this.props.appTexts != null
+        && this.props.appLabels != null) {
         return (
-          <Login view={this.state.loginRegistration}
+          <Login view={this.state.view}
             errorMap={this.state.errorMap}
-            loginFields={this.props.appForms.LOGIN_FORM}
-            loginTexts={this.props.appTexts.LOGIN_FORM}
-            loginLabels={this.props.appLabels.LOGIN_FORM}
-            registrationFields={this.props.appForms.REGISTRATION_FORM}
-            registrationLabels={this.props.appLabels.REGISTRATION_FORM}
-            registrationTexts={this.props.appTexts.REGISTRATION_FORM}
+            fields={this.props.appForms}
+            texts={this.props.appTexts}
+            labels={this.props.appLabels}
             onChangeLogin={this.showLogin}
             onChangeRegistration={this.showRegistration}
+            onForgotPassword={this.showForgotPassword}
             fieldChangeEvent={this.fieldChangeEvent}
             fieldBlurEvent={this.fieldBlurEvent}
             buttonClick={this.buttonClick}/>

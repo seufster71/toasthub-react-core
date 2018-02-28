@@ -40,6 +40,9 @@ export default function appPrefReducer(state = {}, action) {
           if (action.responseJson.params.appPageLabels.REGISTRATION_FORM != null) {
             myState.appLabels.REGISTRATION_FORM = action.responseJson.params.appPageLabels.REGISTRATION_FORM;
           }
+          if (action.responseJson.params.appPageLabels.FORGOTPASSWORD_FORM != null) {
+            myState.appLabels.FORGOTPASSWORD_FORM = action.responseJson.params.appPageLabels.FORGOTPASSWORD_FORM;
+          }
           myState.appOptions = {};
           if (action.responseJson.params.appPageOptions.REGISTRATION_FORM != null) {
             myState.appOptions.REGISTRATION_FORM = action.responseJson.params.appPageOptions.REGISTRATION_FORM;
