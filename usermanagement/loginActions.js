@@ -1,4 +1,4 @@
-import callService from '../api/Api';
+import callService from '../api/api';
 
 // actions
 export function initLogin(params) {

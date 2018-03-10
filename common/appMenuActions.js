@@ -1,4 +1,4 @@
-import callService from '../api/Api';
+import callService from '../api/api';
 
 // action
 export function loadMenus(responseJson) {
