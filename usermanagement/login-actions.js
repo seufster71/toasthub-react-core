@@ -9,13 +9,14 @@ export function saveLang() {
 }
 
 // thunks
-export function authenticate(inputFields) {
+export function authenticate(inputFields,lang) {
   return function(dispatch) {
     let requestParams = {};
     requestParams.action = "LOGINAUTHENTICATE";
     requestParams.service = "LOGIN_SVC";
     requestParams.appForms = ["LOGIN_FORM"];
     requestParams.inputFields = inputFields;
+    requestParams.lang = lang;
     let params = {};
     params.requestParams = requestParams;
     params.URI = '/api/login/authenticate';
@@ -32,8 +33,8 @@ export function authenticate(inputFields) {
               params.currentPage = "member";
             }
           }
+          dispatch({type:'SAVE_AUTHENTICATION',responseJson});
           dispatch({type:'PROCESS_NAV_CHANGE',params});
-          dispatch({type:'SHOW_STATUS',info:responseJson.params.status.info});
         }
       }
 
@@ -44,13 +45,14 @@ export function authenticate(inputFields) {
   };
 }
 
-export function register(inputFields) {
+export function register(inputFields, lang) {
   return function(dispatch) {
     let requestParams = {};
     requestParams.action = "REGISTERFULL";
     requestParams.service = "LOGIN_SVC";
     requestParams.appForms = ["REGISTRATION_FORM"];
     requestParams.inputFields = inputFields;
+    requestParams.lang = lang;
     let params = {};
     params.requestParams = requestParams;
     params.URI = '/api/login/callService';
@@ -79,13 +81,14 @@ export function register(inputFields) {
   };
 }
 
-export function forgotPassword(inputFields) {
+export function forgotPassword(inputFields, lang) {
   return function(dispatch) {
     let requestParams = {};
     requestParams.action = "FORGOTPASSWORD";
     requestParams.service = "LOGIN_SVC";
     requestParams.appForms = ["FORGOTPASSWORD_FORM"];
     requestParams.inputFields = inputFields;
+    requestParams.lang = lang;
     let params = {};
     params.requestParams = requestParams;
     params.URI = '/api/login/callService';

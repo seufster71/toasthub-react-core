@@ -41,7 +41,7 @@ export function initMember() {
     requestParams.service = "MEMBER_SVC";
     //requestParams.appForms = new Array("LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
     requestParams.appTexts = new Array("MEMBER_PAGE");
-    requestParams.menuNames = new Array("MEMBER_MENU_RIGHT");
+    requestParams.menuNames = new Array("MEMBER_MENU_TOP");
     let params = {};
     params.requestParams = requestParams;
     params.URI = '/api/member/callService';

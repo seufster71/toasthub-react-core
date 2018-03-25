@@ -189,6 +189,13 @@ const validateFieldTXT = (params, field, fieldName) => {
       if (regex != null && regex.exec(txtValue) != null) {
         // success
         errorMapTXT[field.name] = "";
+        // clear sub errors
+        if (validateParams.onFail != null) {
+          let failRegexs = validateParams.onFail;
+          for(let j = 0; j < failRegexs.length; j++) {
+            errorMapTXT[failRegexs[j].link] = "SUCCESS";
+          }
+        }
       } else {
         // fail
         if (validateParams.onFail != null) {
@@ -198,6 +205,8 @@ const validateFieldTXT = (params, field, fieldName) => {
             if (fr != null && fr.exec(txtValue) == null) {
               // fail
               errorMapTXT[failRegexs[j].link] = "ERROR";
+            } else {
+              errorMapTXT[failRegexs[j].link] = "SUCCESS";
             }
           }
         }
@@ -212,8 +221,8 @@ const validateFieldTXT = (params, field, fieldName) => {
             if (params.prefix != null) {
               matchField = params.prefix.concat("-").concat(validateParams.matchField);
             }
-            let theField = document.getElementById(matchField);
-            if (theField != null && txtValue === theField.value){
+            let theField = params.state[matchField];
+            if (theField != null && txtValue === theField){
               // success
               errorMapTXT[field.name] = "";
             } else {

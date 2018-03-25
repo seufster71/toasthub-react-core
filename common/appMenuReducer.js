@@ -20,12 +20,19 @@ export default function appMenuReducer(state = {}, action) {
       if (action.responseJson != null && action.responseJson.params != null) {
         let initMemberState = {};
         if (action.responseJson.params.MENUS != null) {
-          if (action.responseJson.params.MENUS.MEMBER_MENU_RIGHT != null) {
+          const menus = action.responseJson.params.MENUS;
+          for (const key of Object.keys(menus)) {
+            initMemberState[key] = menus[key];
+          }
+          /*if (action.responseJson.params.MENUS.MEMBER_MENU_RIGHT != null) {
             initMemberState.MEMBER_MENU_RIGHT = action.responseJson.params.MENUS.MEMBER_MENU_RIGHT;
           }
           if (action.responseJson.params.MENUS.MEMBER_MENU_LEFT != null) {
             initMemberState.MEMBER_MENU_LEFT = action.responseJson.params.MENUS.MEMEBER_MENU_LEFT;
           }
+          if (action.responseJson.params.MENUS.MEMBER_MENU_TOP != null) {
+            initMemberState.MEMBER_MENU_TOP = action.responseJson.params.MENUS.MEMEBER_MENU_TOP;
+          }*/
         }
         return Object.assign({}, state, initMemberState);
       } else {

@@ -1,15 +1,16 @@
 import React from "react";
+import fuLogger from '../common/fuLogger';
 // test
 export default function callService(params) {
   let requestParams = {};
   if (params != null) {
     if (params.requestParams == null) {
-      console.log("Params are missing");
+      fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldChangeEvent',msg:"Params are missing"});
     } else {
       requestParams = params.requestParams;
     }
   } else {
-    console.log("Missing params");
+    fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldChangeEvent',msg:"Params are missing"});
     return;
   }
   requestParams.metrics = {};
@@ -20,7 +21,9 @@ export default function callService(params) {
     .match(/([A-Z]+[+-][0-9]+.*)/)[1];
 
   return new Promise((resolve, reject) => {
-    fetch(params.URI, {
+    //const uri = "http://localhost:8090"+params.URI;
+    const uri = "http://10.0.1.9:8090"+params.URI;
+    fetch(uri, {
       method: "POST",
       credentials: "same-origin",
       headers: { "Content-type": "application/json" },
@@ -28,12 +31,12 @@ export default function callService(params) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log("Request succeeded with JSON response", responseJson);
+        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldChangeEvent',msg:"Request succeeded with JSON response ",msgObj:responseJson});
         resolve(responseJson);
         //params.responseCallBack(responseJson);
       })
       .catch(function(error) {
-        console.log("Request failed", error);
+        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldChangeEvent',msg:"Request failed",msgObj:error});
         resolve();
       });
   });
