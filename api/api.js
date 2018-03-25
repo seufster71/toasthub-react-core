@@ -1,5 +1,5 @@
 import React from "react";
-import fuLogger from '../common/fuLogger';
+import fuLogger from '../common/fu-logger';
 // test
 export default function callService(params) {
   let requestParams = {};

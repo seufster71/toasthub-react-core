@@ -11,7 +11,7 @@ import utils from '../common/utils';
 import {connect} from 'react-redux';
 import * as loginActions from './login-actions';
 import {bindActionCreators} from 'redux';
-import fuLogger from '../common/fuLogger';
+import fuLogger from '../common/fu-logger';
 
 class LoginContainer extends Component {
     constructor(props) {
