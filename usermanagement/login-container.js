@@ -6,7 +6,7 @@ import React, {Component} from 'react';
 import { Text } from 'react-native';
 import PropTypes from 'prop-types';
 import callService from '../api/api';
-import LoginView from '../../coreWeb/userManagement/login-view';
+import LoginView from '../../coreView/userManagement/login-view';
 import utils from '../common/utils';
 import {connect} from 'react-redux';
 import * as loginActions from './login-actions';

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Navigation from "../../coreWeb/navigation/navigation-view.js";
+import Navigation from "../../coreView/navigation/navigation-view.js";
 import callService from "../api/api";
 import { connect } from "react-redux";
 
