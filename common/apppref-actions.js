@@ -1,4 +1,4 @@
-import callService from '../api/api';
+import callService from '../api/api-call';
 
 // action
 export function loadInitPublic(responseJson) {

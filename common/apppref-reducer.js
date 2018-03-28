@@ -1,7 +1,7 @@
 export default function appPrefReducer(state = {}, action) {
+  let myState = {};
   switch(action.type) {
     case 'LOAD_INIT_PUBLIC': {
-      let myState = {};
       if (action.responseJson != null && action.responseJson.params != null) {
         if (action.responseJson.params.appPageFormFields != null) {
           myState.appForms = {};
@@ -67,7 +67,6 @@ export default function appPrefReducer(state = {}, action) {
     }
     case 'LOAD_INIT_MEMBER':{
       if (action.responseJson != null && action.responseJson.params != null) {
-        let myState = {};
         if (state.appTests != null) {
           myState = Object.assign({}, state);
         } else {

@@ -3,14 +3,14 @@
 * Copyright Toasthub.org
 */
 import React, {Component} from 'react';
-import { Text } from 'react-native';
 import PropTypes from 'prop-types';
-import callService from '../api/api';
+import callService from '../api/api-call';
 import LoginView from '../../coreView/userManagement/login-view';
 import utils from '../common/utils';
 import {connect} from 'react-redux';
 import * as loginActions from './login-actions';
 import {bindActionCreators} from 'redux';
+import InfoView from '../../coreView/common/info-view';
 import fuLogger from '../common/fu-logger';
 
 class LoginContainer extends Component {
@@ -39,6 +39,8 @@ class LoginContainer extends Component {
       return (event) => {
         if (this.props.codeType === 'NATIVE') {
           this.setState({[fieldName]:event.nativeEvent.text});
+        } else {
+          this.setState({[fieldName]:event.target.value});
         }
       };
     }
@@ -71,9 +73,9 @@ class LoginContainer extends Component {
           //this.setState({[e]:event.nativeEvent.text});
 
         } else {
-          fieldName = e.target.id;
-          fieldParts = e.target.id.split("-");
-          value = e.target.value;
+          fieldName = e;
+          fieldParts = e.split("-");
+          value = event.target.value;
         }
         fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"field blur "+fieldName});
         fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"the state " + JSON.stringify(this.state)});
@@ -88,8 +90,6 @@ class LoginContainer extends Component {
           let errorMap = Object.assign({}, this.state.errorMap, validateReg.errorMap);
           myState.errorMap = errorMap;
         }
-        // save to state
-        //myState[fieldName] = value;
         this.setState(Object.assign({}, this.state, myState));
         fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"the state " + JSON.stringify(this.state)});
       };
@@ -101,9 +101,8 @@ class LoginContainer extends Component {
         if (this.props.codeType === 'NATIVE') {
           fieldName = e;
         } else {
-          e.preventDefault();
-
-          fieldName = e.target.id;
+          event.preventDefault();
+          fieldName = event.target.id;
         }
         fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"the state " + JSON.stringify(this.state)});
         if (fieldName === "LOGIN_FORM_SUBMIT_BUTTON") {
@@ -170,7 +169,7 @@ class LoginContainer extends Component {
         );
       } else {
         return (
-          <Text> App Forms are missing </Text>
+          <InfoView> App Forms are missing </InfoView>
         );
       }
 

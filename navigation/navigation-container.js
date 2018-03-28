@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Navigation from "../../coreView/navigation/navigation-view.js";
-import callService from "../api/api";
+import callService from "../api/api-call";
 import { connect } from "react-redux";
 
 class NavigationContainer extends Component {
