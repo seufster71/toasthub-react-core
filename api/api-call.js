@@ -1,5 +1,6 @@
 import React from "react";
 import fuLogger from '../common/fu-logger';
+import {getHost} from '../../App';
 // test
 export default function callService(params) {
   let requestParams = {};
@@ -21,8 +22,7 @@ export default function callService(params) {
     .match(/([A-Z]+[+-][0-9]+.*)/)[1];
 
   return new Promise((resolve, reject) => {
-    const uri = params.URI;  // use for web
-    //const uri = "http://10.0.1.9:8090"+params.URI;
+    const uri = getHost()+params.URI;
     fetch(uri, {
       method: "POST",
       credentials: "same-origin",

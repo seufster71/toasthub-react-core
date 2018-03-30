@@ -7,6 +7,13 @@ export default function statusReducer(state = {}, action) {
       }
       return Object.assign({}, state, myState);
     }
+    case 'CLEAR_STATUS': {
+      let myState = {};
+      myState.info = null;
+      myState.warn = null;
+      myState.error = null;
+      return Object.assign({}, state, myState);
+    }
     case 'SHOW_STATUS_ERROR': {
       let myState = {};
       if(action.error != null) {
