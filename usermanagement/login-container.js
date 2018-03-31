@@ -12,6 +12,7 @@ import * as loginActions from './login-actions';
 import {bindActionCreators} from 'redux';
 import InfoView from '../../coreView/common/info-view';
 import fuLogger from '../common/fu-logger';
+import {withRouter} from "react-router-dom";
 
 class LoginContainer extends Component {
     constructor(props) {
@@ -115,6 +116,7 @@ class LoginContainer extends Component {
               params.token = tokenParam;
             }
             this.props.actions.authenticate(inputFields, this.props.lang);
+            this.props.history.push("/member");
           } else {
             // show error
             fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"validation issue "});
@@ -185,7 +187,8 @@ LoginContainer.propTypes = {
   appGlobal: PropTypes.object,
   actions: PropTypes.object,
   lang: PropTypes.string,
-  codeType: PropTypes.string
+  codeType: PropTypes.string,
+  history: PropTypes.object
 };
 
 function mapStateToProps(state, ownProps) {
@@ -197,4 +200,4 @@ function mapDispatchToProps(dispatch) {
   return { actions:bindActionCreators(loginActions,dispatch) };
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(LoginContainer);
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(LoginContainer));

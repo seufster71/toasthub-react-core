@@ -9,6 +9,10 @@ export function loadInitMember(responseJson) {
   return { type: "LOAD_INIT_MEMBER", responseJson };
 }
 
+export function loadInitAdmin(responseJson) {
+  return { type: "LOAD_INIT_ADMIN", responseJson };
+}
+
 // thunk
 export function initPublic() {
   return function(dispatch) {
@@ -53,4 +57,25 @@ export function initMember() {
     });
 
   };
+}
+
+  export function initAdmin() {
+    return function(dispatch) {
+      let requestParams = {};
+      requestParams.action = "INIT";
+      requestParams.service = "ADMIN_SVC";
+      //requestParams.appForms = new Array("LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
+      requestParams.appTexts = new Array("ADMIN_PAGE");
+      requestParams.menuNames = new Array("ADMIN_MENU_TOP");
+      let params = {};
+      params.requestParams = requestParams;
+      params.URI = '/api/admin/callService';
+
+      return callService(params).then( (responseJson) => {
+        dispatch(loadInitAdmin(responseJson));
+      }).catch(error => {
+        throw(error);
+      });
+
+    };
 }

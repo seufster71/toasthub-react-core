@@ -80,6 +80,21 @@ export default function appPrefReducer(state = {}, action) {
         return state;
       }
     }
+    case 'LOAD_INIT_ADMIN':{
+      if (action.responseJson != null && action.responseJson.params != null) {
+        if (state.appTests != null) {
+          myState = Object.assign({}, state);
+        } else {
+          myState.appTexts = {};
+        }
+        if (action.responseJson.params.appPageTexts.ADMIN_PAGE != null) {
+          myState.appTexts.ADMIN_PAGE = action.responseJson.params.appPageTexts.ADMIN_PAGE;
+        }
+        return Object.assign({}, state, myState);
+      } else {
+        return state;
+      }
+    }
     case 'SAVE_APPTEXTS':
       return state.appTexts;
     case 'SAVE_APPLABELS':

@@ -6,12 +6,12 @@ export default function callService(params) {
   let requestParams = {};
   if (params != null) {
     if (params.requestParams == null) {
-      fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldChangeEvent',msg:"Params are missing"});
+      fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Params are missing"});
     } else {
       requestParams = params.requestParams;
     }
   } else {
-    fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldChangeEvent',msg:"Params are missing"});
+    fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Params are missing"});
     return;
   }
   requestParams.metrics = {};
@@ -31,12 +31,12 @@ export default function callService(params) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldChangeEvent',msg:"Request succeeded with JSON response ",msgObj:responseJson});
+        fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Request succeeded with JSON response ",msgObj:responseJson});
         resolve(responseJson);
         //params.responseCallBack(responseJson);
       })
       .catch(function(error) {
-        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldChangeEvent',msg:"Request failed",msgObj:error});
+        fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Request failed",msgObj:error});
         resolve();
       });
   });

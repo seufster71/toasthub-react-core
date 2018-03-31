@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import Navigation from "../../coreView/navigation/navigation-view.js";
+import NavigationView from "../../coreView/navigation/navigation-view.js";
 import callService from "../api/api-call";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 
 class NavigationContainer extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class NavigationContainer extends Component {
       menus = this.props.menus;
     }
     return (
-      <Navigation
+      <NavigationView
         appPrefs={this.props.appPrefs}
         menus={menus}
         menuName={this.props.menuName}
@@ -43,4 +44,4 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps)(NavigationContainer);
+export default withRouter(connect(mapStateToProps)(NavigationContainer));
