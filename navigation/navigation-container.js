@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import NavigationView from "../../coreView/navigation/navigation-view.js";
 import callService from "../api/api-call";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter } from "react-router";
 
 class NavigationContainer extends Component {
   constructor(props) {

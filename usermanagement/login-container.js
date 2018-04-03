@@ -12,7 +12,7 @@ import * as loginActions from './login-actions';
 import {bindActionCreators} from 'redux';
 import InfoView from '../../coreView/common/info-view';
 import fuLogger from '../common/fu-logger';
-import {withRouter} from "react-router-dom";
+import {withRouter} from "react-router";
 
 class LoginContainer extends Component {
     constructor(props) {
@@ -111,12 +111,12 @@ class LoginContainer extends Component {
           if (validateLogin.isValid == true) {
             let inputFields = utils.marshallFields({state:this.state,fields:this.props.appForms.LOGIN_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,prefix:"LOGIN_FORM"});
             let params = {};
-            let tokenParam = utils.getQueryStringValue("token");
-            if (tokenParam != null){
-              params.token = tokenParam;
-            }
+            //let tokenParam = utils.getQueryStringValue("token");
+          //  if (tokenParam != null){
+            //  params.token = tokenParam;
+          //  }
             this.props.actions.authenticate(inputFields, this.props.lang);
-            this.props.history.push("/member");
+            this.props.history.replace("/member");
           } else {
             // show error
             fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"validation issue "});
