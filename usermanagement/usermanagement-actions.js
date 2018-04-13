@@ -7,6 +7,9 @@ export function initLogin(params) {
 export function saveLang() {
   return { type:'SAVE_LANG' };
 }
+export function processLogout(responseJson) {
+  return { type: "PROCESS_LOGOUT", responseJson };
+}
 
 // thunks
 export function authenticate(inputFields,lang) {
@@ -34,7 +37,7 @@ export function authenticate(inputFields,lang) {
             }
           }
           dispatch({type:'SAVE_AUTHENTICATION',responseJson});
-          dispatch({type:'PROCESS_NAV_CHANGE',params});
+          //dispatch({type:'PROCESS_NAV_CHANGE',params});
         }
       }
 
@@ -69,7 +72,7 @@ export function register(inputFields, lang) {
               params.currentPage = "login";
             }
           }
-          dispatch({type:'PROCESS_NAV_CHANGE',params});
+          //dispatch({type:'PROCESS_NAV_CHANGE',params});
           dispatch({type:'SHOW_STATUS',info:responseJson.params.status.info});
         }
       }
@@ -110,6 +113,39 @@ export function forgotPassword(inputFields, lang) {
         }
       }
 
+    }).catch(error => {
+      throw(error);
+    });
+
+  };
+}
+
+export function logout() {
+  return function(dispatch) {
+    let requestParams = {};
+    requestParams.action = "LOGOUT";
+    requestParams.service = "MEMBER_SVC";
+    let params = {};
+    params.requestParams = requestParams;
+    params.URI = '/api/member/callService';
+
+    return callService(params).then( (responseJson) => {
+      if (responseJson != null && responseJson.params != null && responseJson.params.status != null) {
+        if (responseJson.params.status.error != null) {
+          dispatch({type:'SHOW_STATUS_ERROR',error:responseJson.params.status.error});
+        } else if (responseJson.params.status.info != null) {
+          let status = "fail";
+          let statuses = responseJson.params.status.info;
+          for (let i = 0; i < statuses.length; i++) {
+            if (status[i].code === "success") {
+              status = "success";
+            }
+          }
+          if (status === "success") {
+            dispatch(processLogout(responseJson));
+          }
+        }
+      }
     }).catch(error => {
       throw(error);
     });

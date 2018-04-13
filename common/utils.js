@@ -307,4 +307,14 @@ const getQueryStringValue = (paramName) => {
   return value;
 };
 
-export default { validateFields, marshallFields, getQueryStringValue};
+const hasPermission = (permissions,code) => {
+  let result = false;
+  if (permissions != null && permissions[code] != null) {
+    if (!(permissions[code].r === "R" || permissions[code].r === "W")){
+      result = true;
+    }
+  }
+  return result;
+}
+
+export default { validateFields, marshallFields, getQueryStringValue, hasPermission};

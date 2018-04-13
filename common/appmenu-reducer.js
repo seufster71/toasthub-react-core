@@ -5,12 +5,10 @@ export default function appMenuReducer(state = {}, action) {
       return state;
     }
     default: {
-      if (action.responseJson != null && action.responseJson.params != null) {
-        if (action.responseJson.params.MENUS != null) {
-          const menus = action.responseJson.params.MENUS;
-          for (let key in menus) {
-            myState[key] = menus[key];
-          }
+      if (action.responseJson != null && action.responseJson.params != null && action.responseJson.params.MENUS != null) {
+        const menus = action.responseJson.params.MENUS;
+        for (let key in menus) {
+          myState[key] = menus[key];
         }
         return Object.assign({}, state, myState);
       } else {

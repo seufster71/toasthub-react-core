@@ -8,7 +8,7 @@ import callService from '../api/api-call';
 import LoginView from '../../coreView/userManagement/login-view';
 import utils from '../common/utils';
 import {connect} from 'react-redux';
-import * as loginActions from './login-actions';
+import * as userManagementActions from './usermanagement-actions';
 import {bindActionCreators} from 'redux';
 import InfoView from '../../coreView/common/info-view';
 import fuLogger from '../common/fu-logger';
@@ -197,7 +197,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions:bindActionCreators(loginActions,dispatch) };
+  return { actions:bindActionCreators(userManagementActions,dispatch) };
 }
 
 export default withRouter(connect(mapStateToProps,mapDispatchToProps)(LoginContainer));

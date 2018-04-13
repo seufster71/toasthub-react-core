@@ -19,7 +19,6 @@ class NavigationContainer extends Component {
       <NavigationView
         appPrefs={this.props.appPrefs}
         menus={menus}
-        menuName={this.props.menuName}
         navClick={this.props.navClick}
       />
     );
@@ -28,19 +27,15 @@ class NavigationContainer extends Component {
 
 NavigationContainer.propTypes = {
   appPrefs: PropTypes.object.isRequired,
-  menuName: PropTypes.string.isRequired,
   navClick: PropTypes.func.isRequired,
   menus: PropTypes.object,
-  lang: PropTypes.string,
-  appGlobal: PropTypes.object
+  lang: PropTypes.string
 };
 
 function mapStateToProps(state, ownProps) {
   return {
-    menus: state.appMenus,
     lang: state.lang,
-    appPrefs: state.appPrefs,
-    appGlobal: state.appPrefs.appGlobal
+    appPrefs: state.appPrefs
   };
 }
 
