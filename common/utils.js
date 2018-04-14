@@ -1,4 +1,5 @@
 import React from 'react';
+import {Route, Redirect} from 'react-router';
 import PropTypes from 'prop-types';
 
 
@@ -310,11 +311,19 @@ const getQueryStringValue = (paramName) => {
 const hasPermission = (permissions,code) => {
   let result = false;
   if (permissions != null && permissions[code] != null) {
-    if (!(permissions[code].r === "R" || permissions[code].r === "W")){
+    if (permissions[code].r === "R" || permissions[code].r === "W"){
       result = true;
     }
   }
   return result;
-}
+};
+
+export const PrivateRoute = ({component: Component, path: Path, permissions:Permissions, code:Code, pathto:PathTo}) => (
+  <Route path={Path} render={(props) => (
+            hasPermission(Permissions,Code)
+            ? <Component {...props}/>
+            : <Redirect to={PathTo}/>
+  )} />
+);
 
 export default { validateFields, marshallFields, getQueryStringValue, hasPermission};
