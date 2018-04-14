@@ -7,9 +7,6 @@ export function initLogin(params) {
 export function saveLang() {
   return { type:'SAVE_LANG' };
 }
-export function processLogout(responseJson) {
-  return { type: "PROCESS_LOGOUT", responseJson };
-}
 
 // thunks
 export function authenticate(inputFields,lang) {
@@ -120,8 +117,8 @@ export function forgotPassword(inputFields, lang) {
   };
 }
 
-export function logout() {
-  return function(dispatch) {
+export const logout = () => (dispatch) => {
+  return new Promise( (resolve, reject) => {
     let requestParams = {};
     requestParams.action = "LOGOUT";
     requestParams.service = "MEMBER_SVC";
@@ -137,18 +134,20 @@ export function logout() {
           let status = "fail";
           let statuses = responseJson.params.status.info;
           for (let i = 0; i < statuses.length; i++) {
-            if (status[i].code === "success") {
+            if (statuses[i].code === "success") {
               status = "success";
             }
           }
           if (status === "success") {
-            dispatch(processLogout(responseJson));
+            dispatch({ type: "PROCESS_LOGOUT", responseJson });
+            resolve();
           }
         }
       }
     }).catch(error => {
-      throw(error);
+      //throw(error);
+      reject(error);
     });
+  });
 
-  };
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Route, Redirect} from 'react-router';
 import PropTypes from 'prop-types';
+import fuLogger from './fu-logger';
 
 
 const validateFields = (params) => {
@@ -308,19 +309,25 @@ const getQueryStringValue = (paramName) => {
   return value;
 };
 
-const hasPermission = (permissions,code) => {
+const hasPermission = (permissions,code,rights) => {
+  if (rights == null) {
+    rights = "R";
+  }
+  //fuLogger.log({level:'TRACE',loc:'Utils::hasPermission',msg:"props code "+ code + " rights "+ rights});
   let result = false;
-  if (permissions != null && permissions[code] != null) {
-    if (permissions[code].r === "R" || permissions[code].r === "W"){
+  if (permissions != null && code != null && permissions[code] != null) {
+    if (rights === "W" && permissions[code].r === "W"){
+      result = true;
+    } else if (rights === "R" && (permissions[code].r === "R" || permissions[code].r === "W")) {
       result = true;
     }
   }
   return result;
 };
 
-export const PrivateRoute = ({component: Component, path: Path, permissions:Permissions, code:Code, pathto:PathTo}) => (
+export const PrivateRoute = ({component:Component, path:Path, permissions:Permissions, code:Code, minRights:MinRights, pathto:PathTo}) => (
   <Route path={Path} render={(props) => (
-            hasPermission(Permissions,Code)
+            hasPermission(Permissions,Code,MinRights)
             ? <Component {...props}/>
             : <Redirect to={PathTo}/>
   )} />
