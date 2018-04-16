@@ -139,7 +139,7 @@ export const logout = () => (dispatch) => {
             }
           }
           if (status === "success") {
-            dispatch({ type: "PROCESS_LOGOUT", responseJson });
+            dispatch({ type: "PROCESS_LOGOUT", responseJson })
             resolve();
           }
         }
