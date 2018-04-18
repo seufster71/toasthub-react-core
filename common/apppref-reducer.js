@@ -77,4 +77,4 @@ const processInit = (state,action) => {
   } else {
     return state;
   }
-}
+};
