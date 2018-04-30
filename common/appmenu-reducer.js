@@ -1,13 +1,7 @@
 export default function appMenuReducer(state = {}, action) {
   let myState = {};
   switch(action.type) {
-    case 'LOAD_INIT_PUBLIC': {
-      return processInit(state,action);
-    }
-    case 'LOAD_INIT_MEMBER':{
-      return processInit(state,action);
-    }
-    case 'LOAD_INIT_ADMIN':{
+    case 'LOAD_INIT': {
       return processInit(state,action);
     }
     case 'TEST': {

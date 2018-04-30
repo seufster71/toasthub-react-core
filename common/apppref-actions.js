@@ -19,51 +19,10 @@ export function initPublic() {
     params.URI = '/api/public/callService';
 
     return callService(params).then( (responseJson) => {
-      dispatch({ type: "LOAD_INIT_PUBLIC", responseJson });
+      dispatch({ type: "LOAD_INIT", responseJson });
     }).catch(error => {
       throw(error);
     });
 
   };
-}
-
-export function initMember() {
-  return function(dispatch) {
-    let requestParams = {};
-    requestParams.action = "INIT";
-    requestParams.service = "MEMBER_SVC";
-    //requestParams.appForms = new Array("LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
-    requestParams.appTexts = new Array("MEMBER_PAGE");
-    requestParams.menuNames = new Array("MEMBER_MENU_TOP");
-    let params = {};
-    params.requestParams = requestParams;
-    params.URI = '/api/member/callService';
-
-    return callService(params).then( (responseJson) => {
-      dispatch({ type: "LOAD_INIT_MEMBER", responseJson });
-    }).catch(error => {
-      throw(error);
-    });
-
-  };
-}
-
-  export function initAdmin() {
-    return function(dispatch) {
-      let requestParams = {};
-      requestParams.action = "INIT";
-      requestParams.service = "ADMIN_SVC";
-      requestParams.appTexts = new Array("ADMIN_PAGE");
-      requestParams.menuNames = new Array("ADMIN_MENU_TOP");
-      let params = {};
-      params.requestParams = requestParams;
-      params.URI = '/api/admin/callService';
-
-      return callService(params).then( (responseJson) => {
-        dispatch({ type: "LOAD_INIT_ADMIN", responseJson });
-      }).catch(error => {
-        throw(error);
-      });
-
-    };
 }
