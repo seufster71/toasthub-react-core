@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import callService from '../api/api-call';
-import LoginView from '../../coreView/usermanagement/login-view';
+import LoginView from '../../coreView/userManagement/login-view';
 import utils from '../common/utils';
 import {connect} from 'react-redux';
 import * as userManagementActions from './usermanagement-actions';
