@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as appPrefActions from '../../core/common/apppref-actions';
 import fuLogger from '../../core/common/fu-logger';
-import AccessDeniedView from '../../coreView/usermanagement/accessdenied-view';
+import AccessDeniedView from '../../coreView/usermgnt/accessdenied-view';
 
 class AccessDeniedContainer extends Component {
 	constructor(props) {
