@@ -83,6 +83,7 @@ const getPageStart = (action) => {
   if (action.responseJson.params.pageStart != null) {
     pageStart = action.responseJson.params.pageStart;
   }
+  return pageStart;
 };
 
 export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, getItemCount, getItems, getPageLimit, getPageStart };

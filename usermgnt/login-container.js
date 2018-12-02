@@ -78,8 +78,7 @@ class LoginContainer extends Component {
           fieldParts = e.split("-");
           value = event.target.value;
         }
-        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"field blur "+fieldName});
-        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"the state " + JSON.stringify(this.state)});
+        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"1 field " + fieldName + " the state " + JSON.stringify(this.state)});
         let myState = {};
 
         if (fieldParts[0] === "REGISTRATION_FORM") {
@@ -92,7 +91,7 @@ class LoginContainer extends Component {
           myState.errorMap = errorMap;
         }
         this.setState(Object.assign({}, this.state, myState));
-        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"the state " + JSON.stringify(this.state)});
+        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"2 the state " + JSON.stringify(this.state)});
       };
     }
 
@@ -151,7 +150,7 @@ class LoginContainer extends Component {
     }
 
     render() {
-      fuLogger.log({level:'TRACE',loc:'LoginContainer::render',msg:"login"});
+      fuLogger.log({level:'TRACE',loc:'LoginContainer::render',msg:"login " + JSON.stringify(this.state)});
       if (this.props.appForms != null && this.props.appTexts != null
         && this.props.appLabels != null) {
         return (

@@ -11,7 +11,7 @@ export function initPublic() {
     requestParams.appForms = new Array("LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
     requestParams.appTexts = new Array("GLOBAL_PAGE","LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
     requestParams.appLabels = new Array("LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM");
-    requestParams.appOptions = new Array("REGISTRATION_FORM");
+    requestParams.appOptions = new Array("REGISTRATION_FORM","GLOBAL_PAGE");
     requestParams.appGlobal = new Array("LANGUAGES");
     requestParams.menuNames = new Array("PUBLIC_MENU_RIGHT");
     let params = {};
