@@ -1,6 +1,6 @@
 import React from "react";
 import fuLogger from '../common/fu-logger';
-import {getHost} from '../../App';
+import {getHost} from '../../app';
 // test
 export default function callService(params) {
   let requestParams = {};
