@@ -78,7 +78,6 @@ class LoginContainer extends Component {
           fieldParts = e.split("-");
           value = event.target.value;
         }
-        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"1 field " + fieldName + " the state " + JSON.stringify(this.state)});
         let myState = {};
 
         if (fieldParts[0] === "REGISTRATION_FORM") {
@@ -91,7 +90,6 @@ class LoginContainer extends Component {
           myState.errorMap = errorMap;
         }
         this.setState(Object.assign({}, this.state, myState));
-        fuLogger.log({level:'TRACE',loc:'LoginContainer::fieldBlurEvent',msg:"2 the state " + JSON.stringify(this.state)});
       };
     }
 
@@ -104,21 +102,18 @@ class LoginContainer extends Component {
           event.preventDefault();
           fieldName = event.target.id;
         }
-        fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"the state " + JSON.stringify(this.state)});
+        fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"click"});
         if (fieldName === "LOGIN_FORM_SUBMIT_BUTTON") {
           let validateLogin = utils.validateFields({state:this.state,fields:this.props.appForms.LOGIN_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:"LOGIN_FORM"});
           if (validateLogin.isValid == true) {
             let inputFields = utils.marshallFields({state:this.state,fields:this.props.appForms.LOGIN_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,prefix:"LOGIN_FORM"});
             let params = {};
-            //let tokenParam = utils.getQueryStringValue("token");
-          //  if (tokenParam != null){
-            //  params.token = tokenParam;
-          //  }
+
             this.props.actions.authenticate(inputFields, this.props.lang);
-            this.props.history.replace("/member");
+           // this.props.history.replace("/member");
           } else {
             // show error
-            fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"validation issue "});
+            fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"Password is not valid "});
           }
         } else if (fieldName === "REGISTRATION_FORM_SUBMIT_BUTTON") {
           let validateReg = utils.validateFields({state:this.state,fields:this.props.appForms.REGISTRATION_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:"REGISTRATION_FORM"});
@@ -150,7 +145,6 @@ class LoginContainer extends Component {
     }
 
     render() {
-      fuLogger.log({level:'TRACE',loc:'LoginContainer::render',msg:"login " + JSON.stringify(this.state)});
       if (this.props.appForms != null && this.props.appTexts != null
         && this.props.appLabels != null) {
         return (

@@ -23,17 +23,27 @@ export default function callService(params) {
 
   return new Promise((resolve, reject) => {
     const uri = getHost()+params.URI;
+    let headers = new Headers();
+    headers.set("Content-type","application/json");
+    if (params.auth != null) {
+    	headers.set("Authorization", "Basic " + params.auth);
+    }
     fetch(uri, {
       method: "POST",
       credentials: "same-origin",
-      headers: { "Content-type": "application/json" },
+      headers: headers,
       body: JSON.stringify({ params: params.requestParams })
     })
-      .then(response => response.json())
-      .then(responseJson => {
-        fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Request succeeded with JSON response ",msgObj:responseJson});
-        resolve(responseJson);
-        //params.responseCallBack(responseJson);
+      .then(function(response) {
+    	  if (response.status >= 400) {
+    		  let responseMsg = {status:"ERROR", protocalError:response.status};
+    		  fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Received ",msgObj:response.status});
+    		  resolve(responseMsg);
+    	  } else {
+    		  fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Request succeeded with JSON response ",msgObj:response});
+    	      resolve(response.json());
+    	  }
+        
       })
       .catch(function(error) {
         fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Request failed",msgObj:error});

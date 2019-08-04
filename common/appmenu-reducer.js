@@ -4,6 +4,9 @@ export default function appMenuReducer(state = {}, action) {
     case 'LOAD_INIT': {
       return processInit(state,action);
     }
+    case 'MEMBER_INIT': {
+        return processInit(state,action);
+      }
     case 'TEST': {
       return state;
     }
