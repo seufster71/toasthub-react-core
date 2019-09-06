@@ -71,19 +71,19 @@ const getItems = (action) => {
   return items;
 };
 
-const getPageLimit = (action) => {
-  let pageLimit = 20;
-  if (action.responseJson.params.pageLimit != null) {
-    pageLimit = action.responseJson.params.pageLimit;
+const getListLimit = (action) => {
+  let listLimit = 20;
+  if (action.responseJson.params.listLimit != null) {
+    listLimit = action.responseJson.params.listLimit;
   }
-  return pageLimit;
+  return listLimit;
 };
-const getPageStart = (action) => {
-  let pageStart = 0;
-  if (action.responseJson.params.pageStart != null) {
-    pageStart = action.responseJson.params.pageStart;
+const getListStart = (action) => {
+  let listStart = 0;
+  if (action.responseJson.params.listStart != null) {
+    listStart = action.responseJson.params.listStart;
   }
-  return pageStart;
+  return listStart;
 };
 
-export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, getItemCount, getItems, getPageLimit, getPageStart };
+export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, getItemCount, getItems, getListLimit, getListStart };

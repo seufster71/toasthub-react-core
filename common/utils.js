@@ -325,20 +325,20 @@ const hasPermission = (permissions,code,rights) => {
   return result;
 };
 
-const getPageLimit = (appPrefs, containerState, fieldName) => {
-  let pageLimit = 20;
+const getListLimit = (appPrefs, containerState, fieldName) => {
+  let listLimit = 20;
   if(appPrefs != null && appPrefs.appOptions != null && appPrefs.appOptions.GLOBAL_PAGE != null &&
     appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT != null) {
     if (appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value != "") {
-      pageLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value);
+      listLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value);
     } else if (appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue != ""){
-      pageLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue);
+      listLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue);
     }
   }
   if (containerState != null && containerState[fieldName] != null && containerState[fieldName] != ""){
-    pageLimit = containerState[fieldName];
+    listLimit = containerState[fieldName];
   }
-  return pageLimit;
+  return listLimit;
 };
 
 export const PrivateRoute = ({component:Component, path:Path, permissions:Permissions, code:Code, minRights:MinRights, pathto:PathTo}) => (
@@ -349,4 +349,4 @@ export const PrivateRoute = ({component:Component, path:Path, permissions:Permis
   )} />
 );
 
-export default { validateFields, marshallFields, getQueryStringValue, hasPermission, getPageLimit};
+export default { validateFields, marshallFields, getQueryStringValue, hasPermission, getListLimit};
