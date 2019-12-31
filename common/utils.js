@@ -349,4 +349,157 @@ export const PrivateRoute = ({component:Component, path:Path, permissions:Permis
   )} />
 );
 
-export default { validateFields, marshallFields, getQueryStringValue, hasPermission, getListLimit};
+const validateFormFields = (formFields, inputFields) => {
+	  
+	let isValidTmp = true;
+	let errorMapTmp = {};
+	  
+	if (formFields == null || inputFields == null){
+		return {isValid:false}
+	}
+	  
+	for( let i = 0, len = formFields.length; i < len; i++ ) {
+	    
+		if(formFields[i].rendered) {
+			switch (formFields[i].fieldType) {
+		        case "MTXT": {
+		        	let resultMTXT = validateFieldMTXT(formFields[i], inputFields[formFields[i].name]);
+		        	if (resultMTXT.isValid == false) {
+		        		isValidTmp = resultMTXT.isValid;
+		        	}
+		        	errorMapTmp = Object.assign({}, errorMapTmp, resultMTXT.errorMap);
+		        	break;
+		        }
+		        case "TXT": {
+		        	let resultTXT = validateFormFieldTXT(formFields[i],inputFields[formFields[i].name]);
+		        	if (resultTXT.isValid == false) {
+		        		isValidTmp = resultTXT.isValid;
+		        	}
+		        	errorMapTmp = Object.assign({}, errorMapTmp, resultTXT.errorMap);
+		        	break;
+		        }
+		        case "TXTA": {
+		        	let resultTXTA = validateFieldTXTA(formFields[i],inputFields[formFields[i].name]);
+		        	if (resultTXTA.isValid == false) {
+		        		isValidTmp = resultTXTA.isValid;
+		        	}
+		        	errorMapTmp = Object.assign({}, errorMapTmp, resultTXTA.errorMap);
+		        	break;
+		        }
+		        case "BLN": {
+		        	break;
+		        }
+		        case "LTXT": {
+		        	let resultLTXT = validateFieldLTXT(params.state, field, params.languages, params.lang);
+		        	if (resultLTXT.isValid == false) {
+		        		isValidTmp = resultLTXT.isValid;
+		        	}
+		        	errorMapTmp = Object.assign({}, errorMapTmp, resultLTXT.errorMap);
+		        	break;
+		        }
+		        case "MDLSNG": {
+		        	let resultMDLSNG = validateFormFieldMDLSNG(formFields[i],inputFields[formFields[i].name]);
+		        	if (resultMDLSNG.isValid == false) {
+		        		isValidTmp = resultMDLSNG.isValid;
+		        	}
+		        	errorMapTmp = Object.assign({}, errorMapTmp, resultMDLSNG.errorMap);
+		        	break;
+		        }
+		        default: {
+		        	break;
+		        }
+			}
+		}
+	}
+		return {isValid:isValidTmp,errorMap:errorMapTmp};
+}; // validateFormFields
+
+const validateFormFieldTXT = (field, value) => {
+	let isValidTXT = true;
+	let requiredError = false;
+	let errorMapTXT = {};
+	if (field.required){
+		if (value == null || (value != null && value == "")){
+			isValidTXT = false;
+			requiredError = true;
+			errorMapTXT[field.name] = "Required";
+	    } else {
+	    	errorMapTXT[field.name] = "";
+	    }
+	}
+	if (requiredError == false && field.validation != null && field.validation != "") {
+		let validateParams = JSON.parse(field.validation);
+	    if (validateParams.regex != null && validateParams.regex != ""){
+	    	let regex = new RegExp(validateParams.regex);
+	    	if (regex != null && regex.exec(value) != null) {
+	    		// success
+	    		errorMapTXT[field.name] = "";
+	    		// clear sub errors
+	    		if (validateParams.onFail != null) {
+	    			let failRegexs = validateParams.onFail;
+	    			for(let j = 0; j < failRegexs.length; j++) {
+	    				errorMapTXT[failRegexs[j].link] = "SUCCESS";
+	    			}
+	    		}
+	    	} else {
+	    		// fail
+	    		if (validateParams.onFail != null) {
+	    			let failRegexs = validateParams.onFail;
+	    			for(let j = 0; j < failRegexs.length; j++) {
+	    				let fr = new RegExp(failRegexs[j].regex);
+	    				if (fr != null && fr.exec(value) == null) {
+	    					// fail
+	    					errorMapTXT[failRegexs[j].link] = "ERROR";
+	    				} else {
+	    					errorMapTXT[failRegexs[j].link] = "SUCCESS";
+	    				}
+	    			}
+	    		}
+	    		isValidTXT = false;
+	    		errorMapTXT[field.name] = validateParams.errorMsg;
+	    	}
+	    } else if (validateParams.operator != null) {
+	    	switch (validateParams.operator) {
+	        	case "equals": {
+	        		if (validateParams.matchField != null) {
+	        			let matchField = "";
+	        			if (params.prefix != null) {
+	        				matchField = params.prefix.concat("-").concat(validateParams.matchField);
+	        			}
+	        			let theField = params.state[matchField];
+	        			if (theField != null && value === theField){
+	        				// success
+	        				errorMapTXT[field.name] = "";
+	        			} else {
+	        				// fail
+	        				isValidTXT = false;
+	        				errorMapTXT[field.name] = validateParams.errorMsg;
+	        			}
+	        		}
+	        		break;
+	        	}
+	        	default: {
+
+	        		break;
+	        	}
+	    	}
+	    }
+	}
+	return {isValid:isValidTXT, errorMap:errorMapTXT};
+}; // validateFormFieldTXT
+
+const validateFormFieldMDLSNG = (field, value) => {
+	let isValidMDLSNG = true;
+	let errorMapMDLSNG = {};
+	if (field.required){
+		if (value == null || (value != null && value == "")){
+			isValidMDLSNG = false;
+			errorMapMDLSNG[field.name] = "required";
+		} else {
+			errorMapMDLSNG[field.name] = "";
+	    }
+	}
+	return {isValid:isValidMDLSNG, errorMap:errorMapMDLSNG};
+}; // validateFormFieldMDLSNG
+	
+export default { validateFields, validateFormFields, marshallFields, getQueryStringValue, hasPermission, getListLimit};
