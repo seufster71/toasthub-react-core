@@ -153,21 +153,25 @@ const marshallFields = (params) => {
   return resultObj;
 }; // marshallFields
 
-const validateFieldMTXT = (state, field, languages) => {
-  let isValidMTXT = true;
-  let errorMapMTXT = {};
-  if (field.required){
-    for(let j=0;j<languages.length;j++){
-      let mtxtValue = state[field.name.concat("-").concat(languages[j].code)];
-      if (mtxtValue == null || (mtxtValue != null && mtxtValue == "")){
-          isValidMTXT = false;
-          errorMapMTXT[field.name.concat("-").concat(languages[j].code)] = "required";
-      } else {
-        errorMapMTXT[field.name.concat("-").concat(languages[j].code)] = "";
-      }
-    }
-  }
-  return {isValid:isValidMTXT, errorMap:errorMapMTXT};
+const validateFieldMTXT = (field, inputFields, languages) => {
+	let isValidMTXT = true;
+	let errorMapMTXT = {};
+	// check if entire field is required
+	if (field.required){
+		for(let j=0;j<languages.length;j++){
+			// check for default language
+			if (languages[j].defaultLang) {
+				let mtxtValue = inputFields[field.name.concat("-TEXT-").concat(languages[j].code)];
+				if (mtxtValue == null || (mtxtValue != null && mtxtValue == "")){
+					isValidMTXT = false;
+					errorMapMTXT[field.name.concat("-TEXT-").concat(languages[j].code)] = "required";
+				} else {
+					errorMapMTXT[field.name.concat("-TEXT-").concat(languages[j].code)] = "";
+				}
+			}
+		}
+	}
+	return {isValid:isValidMTXT, errorMap:errorMapMTXT};
 };
 
 const validateFieldTXT = (params, field, fieldName) => {
@@ -349,7 +353,7 @@ export const PrivateRoute = ({component:Component, path:Path, permissions:Permis
   )} />
 );
 
-const validateFormFields = (formFields, inputFields) => {
+const validateFormFields = (formFields, inputFields, languages) => {
 	  
 	let isValidTmp = true;
 	let errorMapTmp = {};
@@ -363,7 +367,14 @@ const validateFormFields = (formFields, inputFields) => {
 		if(formFields[i].rendered) {
 			switch (formFields[i].fieldType) {
 		        case "MTXT": {
-		        	let resultMTXT = validateFieldMTXT(formFields[i], inputFields[formFields[i].name]);
+		        	// Default text
+		        	let resultTXT = validateFormFieldTXT(formFields[i],inputFields[formFields[i].name.concat("-DEFAULT")]);
+		        	if (resultTXT.isValid == false) {
+		        		isValidTmp = resultTXT.isValid;
+		        	}
+		        	errorMapTmp = Object.assign({}, errorMapTmp, resultTXT.errorMap);
+		        	// Multi Text
+		        	let resultMTXT = validateFieldMTXT(formFields[i], inputFields, languages);
 		        	if (resultMTXT.isValid == false) {
 		        		isValidTmp = resultMTXT.isValid;
 		        	}
@@ -502,4 +513,16 @@ const validateFormFieldMDLSNG = (field, value) => {
 	return {isValid:isValidMDLSNG, errorMap:errorMapMDLSNG};
 }; // validateFormFieldMDLSNG
 	
-export default { validateFields, validateFormFields, marshallFields, getQueryStringValue, hasPermission, getListLimit};
+const getMultiLangLabel = (item, lang) => {
+	let label = item.title.defaultText;
+	if (item.title.langTexts != null) {
+		for (let j = 0; j < item.title.langTexts.length; j++) {
+			if (item.title.langTexts[j].lang == lang) {
+				label = item.title.langTexts[j].text;
+			}
+		}
+	}
+	return label;
+}; // getMultiLangLabel
+
+export default { validateFields, validateFormFields, marshallFields, getQueryStringValue, hasPermission, getListLimit, getMultiLangLabel};
