@@ -153,26 +153,7 @@ const marshallFields = (params) => {
   return resultObj;
 }; // marshallFields
 
-const validateFieldMTXT = (field, inputFields, languages) => {
-	let isValidMTXT = true;
-	let errorMapMTXT = {};
-	// check if entire field is required
-	if (field.required){
-		for(let j=0;j<languages.length;j++){
-			// check for default language
-			if (languages[j].defaultLang) {
-				let mtxtValue = inputFields[field.name.concat("-TEXT-").concat(languages[j].code)];
-				if (mtxtValue == null || (mtxtValue != null && mtxtValue == "")){
-					isValidMTXT = false;
-					errorMapMTXT[field.name.concat("-TEXT-").concat(languages[j].code)] = "required";
-				} else {
-					errorMapMTXT[field.name.concat("-TEXT-").concat(languages[j].code)] = "";
-				}
-			}
-		}
-	}
-	return {isValid:isValidMTXT, errorMap:errorMapMTXT};
-};
+
 
 const validateFieldTXT = (params, field, fieldName) => {
   let isValidTXT = true;
@@ -256,7 +237,7 @@ const validateFieldTXTA = (state, field) => {
     let txtaValue = state[field.name];
     if (txtaValue == null || (txtaValue != null && txtaValue == "")){
       isValidTXTA = false;
-      errorMapTXTA[field.name] = "required";
+      errorMapTXTA[field.name] = "Required";
     } else {
       errorMapTXTA[field.name] = "";
     }
@@ -275,7 +256,7 @@ const validateFieldLTXT = (state, field, languages, lang) => {
           if (languages[j].title.langTexts[k].lang == lang && languages[j].code == lang){
             if (ltxtValue == null || (ltxtValue != null && ltxtValue == "")){
               isValidLTXT = false;
-              errorMapLTXT[field.name] = "required";
+              errorMapLTXT[field.name] = "Required";
             } else {
               errorMapLTXT[field.name] = "";
             }
@@ -288,18 +269,18 @@ const validateFieldLTXT = (state, field, languages, lang) => {
 };
 
 const validateFieldMDLSNG = (state, field) => {
-  let isValidMDLSNG = true;
-  let errorMapMDLSNG = {};
-  if (field.required){
-    let mdlValue = state[field.name];
-    if (mdlValue == null || (mdlValue != null && mdlValue == "")){
-      isValidMDLSNG = false;
-      errorMapMDLSNG[field.name] = "required";
-    } else {
-      errorMapMDLSNG[field.name] = "";
-    }
-  }
-  return {isValid:isValidMDLSNG, errorMap:errorMapMDLSNG};
+	let isValidMDLSNG = true;
+	let errorMapMDLSNG = {};
+	if (field.required){
+		let mdlValue = state[field.name];
+		if (mdlValue == null || (mdlValue != null && mdlValue == "")){
+			isValidMDLSNG = false;
+			errorMapMDLSNG[field.name] = "Required";
+		} else {
+			errorMapMDLSNG[field.name] = "";
+		}
+	}
+	return {isValid:isValidMDLSNG, errorMap:errorMapMDLSNG};
 };
 
 const getQueryStringValue = (paramName) => {
@@ -368,13 +349,13 @@ const validateFormFields = (formFields, inputFields, languages) => {
 			switch (formFields[i].fieldType) {
 		        case "MTXT": {
 		        	// Default text
-		        	let resultTXT = validateFormFieldTXT(formFields[i],inputFields[formFields[i].name.concat("-DEFAULT")]);
+		        	let resultTXT = validateFormFieldTXT(formFields[i],inputFields[formFields[i].name.concat("-DEFAULT")],formFields[i].name.concat("-DEFAULT"));
 		        	if (resultTXT.isValid == false) {
 		        		isValidTmp = resultTXT.isValid;
 		        	}
 		        	errorMapTmp = Object.assign({}, errorMapTmp, resultTXT.errorMap);
 		        	// Multi Text
-		        	let resultMTXT = validateFieldMTXT(formFields[i], inputFields, languages);
+		        	let resultMTXT = validateFormFieldMTXT(formFields[i], inputFields, languages);
 		        	if (resultMTXT.isValid == false) {
 		        		isValidTmp = resultMTXT.isValid;
 		        	}
@@ -416,6 +397,14 @@ const validateFormFields = (formFields, inputFields, languages) => {
 		        	errorMapTmp = Object.assign({}, errorMapTmp, resultMDLSNG.errorMap);
 		        	break;
 		        }
+		        case "SLT": {
+		        	let resultSLT = validateFormFieldSLT(formFields[i],inputFields[formFields[i].name]);
+		        	if (resultSLT.isValid == false) {
+		        		isValidTmp = resultSLT.isValid;
+		        	}
+		        	errorMapTmp = Object.assign({}, errorMapTmp, resultSLT.errorMap);
+		        	break;
+		        }
 		        default: {
 		        	break;
 		        }
@@ -425,7 +414,7 @@ const validateFormFields = (formFields, inputFields, languages) => {
 		return {isValid:isValidTmp,errorMap:errorMapTmp};
 }; // validateFormFields
 
-const validateFormFieldTXT = (field, value) => {
+const validateFormFieldTXT = (field, value, fieldName) => {
 	let isValidTXT = true;
 	let requiredError = false;
 	let errorMapTXT = {};
@@ -433,9 +422,17 @@ const validateFormFieldTXT = (field, value) => {
 		if (value == null || (value != null && value == "")){
 			isValidTXT = false;
 			requiredError = true;
-			errorMapTXT[field.name] = "Required";
+			if (fieldName != null) {
+				errorMapTXT[fieldName] = "Required";
+			} else {
+				errorMapTXT[field.name] = "Required";
+			}
 	    } else {
-	    	errorMapTXT[field.name] = "";
+	    	if (fieldName != null) {
+	    		errorMapTXT[fieldName] = "";
+	    	} else {
+	    		errorMapTXT[field.name] = "";
+	    	}
 	    }
 	}
 	if (requiredError == false && field.validation != null && field.validation != "") {
@@ -505,14 +502,50 @@ const validateFormFieldMDLSNG = (field, value) => {
 	if (field.required){
 		if (value == null || (value != null && value == "")){
 			isValidMDLSNG = false;
-			errorMapMDLSNG[field.name] = "required";
+			errorMapMDLSNG[field.name] = "Required";
 		} else {
 			errorMapMDLSNG[field.name] = "";
 	    }
 	}
 	return {isValid:isValidMDLSNG, errorMap:errorMapMDLSNG};
 }; // validateFormFieldMDLSNG
-	
+
+
+const validateFormFieldSLT = (field, value) => {
+	let isValidSLT = true;
+	let errorMapSLT = {};
+	if (field.required){
+	    if (value == null || (value != null && (value == "" || value == 0))){
+	    	isValidSLT = false;
+	    	errorMapSLT[field.name] = "Required";
+	    } else {
+	    	errorMapSLT[field.name] = "";
+	    }
+	}
+	return {isValid:isValidSLT, errorMap:errorMapSLT};
+}; //validateFormFieldSLT
+
+const validateFormFieldMTXT = (field, inputFields, languages) => {
+	let isValidMTXT = true;
+	let errorMapMTXT = {};
+	// check if entire field is required
+	if (field.required){
+		for(let j=0;j<languages.length;j++){
+			// check for default language
+			if (languages[j].defaultLang) {
+				let mtxtValue = inputFields[field.name.concat("-TEXT-").concat(languages[j].code)];
+				if (mtxtValue == null || (mtxtValue != null && mtxtValue == "")){
+					isValidMTXT = false;
+					errorMapMTXT[field.name.concat("-TEXT-").concat(languages[j].code)] = "Required";
+				} else {
+					errorMapMTXT[field.name.concat("-TEXT-").concat(languages[j].code)] = "";
+				}
+			}
+		}
+	}
+	return {isValid:isValidMTXT, errorMap:errorMapMTXT};
+}; // validateFormFieldMTXT
+
 const getMultiLangLabel = (item, lang) => {
 	let label = item.title.defaultText;
 	if (item.title.langTexts != null) {
