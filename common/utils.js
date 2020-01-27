@@ -301,9 +301,9 @@ const hasPermission = (permissions,code,rights) => {
   //fuLogger.log({level:'TRACE',loc:'Utils::hasPermission',msg:"props code "+ code + " rights "+ rights});
   let result = false;
   if (permissions != null && code != null && permissions[code] != null) {
-    if (rights === "W" && permissions[code].r === "W"){
+    if (rights === "W" && permissions[code].rights === "W"){
       result = true;
-    } else if (rights === "R" && (permissions[code].r === "R" || permissions[code].r === "W")) {
+    } else if (rights === "R" && (permissions[code].rights === "R" || permissions[code].rights === "W")) {
       result = true;
     }
   }
