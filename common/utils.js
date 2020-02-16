@@ -326,6 +326,23 @@ const getListLimit = (appPrefs, containerState, fieldName) => {
   return listLimit;
 };
 
+const inputChange = (props,fieldName,switchValue) => {
+	let	value = null;
+	if (props.codeType === 'NATIVE') {
+		value = event.nativeEvent.text;
+	} else {
+		value = event.target.value;
+	}
+	if (switchValue != null) {
+		value = switchValue;
+	}
+	props.actions.inputChange(fieldName,value);
+};
+
+const onBlur = (props,fieldName) => {
+	
+};
+
 export const PrivateRoute = ({component:Component, path:Path, permissions:Permissions, code:Code, minRights:MinRights, pathto:PathTo}) => (
   <Route path={Path} render={(props) => (
             hasPermission(Permissions,Code,MinRights)
@@ -558,4 +575,4 @@ const getMultiLangLabel = (item, lang) => {
 	return label;
 }; // getMultiLangLabel
 
-export default { validateFields, validateFormFields, marshallFields, getQueryStringValue, hasPermission, getListLimit, getMultiLangLabel};
+export default { validateFields, validateFormFields, marshallFields, getQueryStringValue, hasPermission, getListLimit, getMultiLangLabel, inputChange, onBlur};
