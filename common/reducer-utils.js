@@ -78,6 +78,7 @@ const getListLimit = (action) => {
   }
   return listLimit;
 };
+
 const getListStart = (action) => {
   let listStart = 0;
   if (action.responseJson.params.listStart != null) {
@@ -86,4 +87,24 @@ const getListStart = (action) => {
   return listStart;
 };
 
-export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, getItemCount, getItems, getListLimit, getListStart };
+const updateListLimit = (state,action) => {
+	if (action.listLimit != null) {
+		let clone = Object.assign({}, state);
+		clone.listLimit = action.listLimit;
+		return clone;
+	} else {
+        return state;
+    }
+}
+
+const updateSearch = (state,action) => {
+	if (action.searchCriteria != null) {
+		let clone = Object.assign({}, state);
+		clone.searchCriteria = action.searchCriteria;
+		return clone;
+	} else {
+        return state;
+    }
+}
+
+export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch };

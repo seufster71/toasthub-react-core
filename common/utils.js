@@ -310,20 +310,19 @@ const hasPermission = (permissions,code,rights) => {
   return result;
 };
 
-const getListLimit = (appPrefs, containerState, fieldName) => {
-  let listLimit = 20;
-  if(appPrefs != null && appPrefs.appOptions != null && appPrefs.appOptions.GLOBAL_PAGE != null &&
-    appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT != null) {
-    if (appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value != "") {
-      listLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value);
-    } else if (appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue != ""){
-      listLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue);
-    }
-  }
-  if (containerState != null && containerState[fieldName] != null && containerState[fieldName] != ""){
-    listLimit = containerState[fieldName];
-  }
-  return listLimit;
+const getListLimit = (appPrefs, listLimit, fieldName) => {
+	let myListLimit = 20;
+	if (listLimit == null){
+		if(appPrefs != null && appPrefs.appOptions != null && appPrefs.appOptions.GLOBAL_PAGE != null &&
+			appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT != null) {
+			if (appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value != "") {
+				myListLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value);
+			} else if (appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue != ""){
+				myListLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue);
+			}
+		}
+	}
+	return myListLimit;
 };
 
 const inputChange = (props,fieldName,switchValue) => {
@@ -575,4 +574,15 @@ const getMultiLangLabel = (item, lang) => {
 	return label;
 }; // getMultiLangLabel
 
-export default { validateFields, validateFormFields, marshallFields, getQueryStringValue, hasPermission, getListLimit, getMultiLangLabel, inputChange, onBlur};
+const debounce = (fn, ms) => {
+	let timer;
+	return _ => {
+		clearTimeout(timer);
+		timer = setTimeout(_ => {
+			timer = null;
+			fn.apply(this, arguments);
+		}, ms);
+	};
+}
+
+export default { validateFields, validateFormFields, marshallFields, getQueryStringValue, hasPermission, getListLimit, getMultiLangLabel, inputChange, onBlur, debounce};
