@@ -107,4 +107,14 @@ const updateSearch = (state,action) => {
     }
 }
 
-export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch };
+const updateOrderBy = (state,action) => {
+	if (action.orderCriteria != null) {
+		let clone = Object.assign({}, state);
+		clone.orderCriteria = action.orderCriteria;
+		return clone;
+	} else {
+        return state;
+    }
+}
+
+export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch, updateOrderBy };
