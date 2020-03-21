@@ -330,7 +330,13 @@ const inputChange = (props,fieldName,switchValue) => {
 	if (props.codeType === 'NATIVE') {
 		value = event.nativeEvent.text;
 	} else {
-		value = event.target.value;
+		if (event != null) {
+			if (event.target != null) {
+				value = event.target.value;
+			} else {
+				value = event;
+			}
+		}
 	}
 	if (switchValue != null) {
 		value = switchValue;

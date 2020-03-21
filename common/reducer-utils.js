@@ -64,7 +64,7 @@ const getItemCount = (action) => {
 };
 
 const getItems = (action) => {
-  let items = 0;
+  let items = [];
   if (action.responseJson.params.items != null) {
     items = action.responseJson.params.items;
   }
@@ -101,6 +101,7 @@ const updateSearch = (state,action) => {
 	if (action.searchCriteria != null) {
 		let clone = Object.assign({}, state);
 		clone.searchCriteria = action.searchCriteria;
+		clone.listStart = 0;
 		return clone;
 	} else {
         return state;
@@ -117,4 +118,30 @@ const updateOrderBy = (state,action) => {
     }
 }
 
-export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch, updateOrderBy };
+const updateInputChange = (state,action) => {
+	if (action.params != null) {
+		let inputFields = Object.assign({}, state.inputFields);
+		inputFields[action.params.field] = action.params.value;
+		let clone = Object.assign({}, state);
+		clone.inputFields = inputFields;
+		return clone;
+	} else {
+        return state;
+    }
+}
+
+const updateClearField = (state,action) => {
+	if (action.params != null) {
+		let inputFields = Object.assign({}, state.inputFields);
+		inputFields[action.params.field] = "";
+		let clone = Object.assign({}, state);
+		clone.inputFields = inputFields;
+		return clone;
+	} else {
+        return state;
+    }
+}
+
+export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, 
+	getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch, 
+	updateOrderBy, updateInputChange, updateClearField };
