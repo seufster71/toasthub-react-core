@@ -142,6 +142,45 @@ const updateClearField = (state,action) => {
     }
 }
 
+const loadInputFields = (item,forms,inputFields) => {
+	for (let i = 0; i < forms.length; i++) {
+		let classModel = JSON.parse(forms[i].classModel);
+		if (item != null && item.hasOwnProperty(classModel.field)) {
+			if (classModel.defaultClazz != null) {
+				inputFields[forms[i].name+"-DEFAULT"] = item[classModel.field].defaultText;
+			}
+			if (classModel.textClazz != null) {
+				for (let j = 0; j < item[classModel.field].langTexts.length; j++) {
+					inputFields[forms[i].name+"-TEXT-"+item[classModel.field].langTexts[j].lang] = item[classModel.field].langTexts[j].text;
+				}
+			}
+			if (classModel.type == "Object") {
+				inputFields[forms[i].name] = "Object";
+			} else {
+				inputFields[forms[i].name] = item[classModel.field];
+			}
+		} else {
+			let result = "";
+			if (forms[i].value != null && forms[i].value != ""){
+				if (forms[i].value.includes("{")) {
+					let formValue = JSON.parse(forms[i].value);
+					if (formValue.options != null) {
+						for (let j = 0; j < formValue.options.length; j++) {
+							if (formValue.options[j] != null && formValue.options[j].defaultInd == true){
+								result = formValue.options[j].value;
+							}
+						}
+					}
+				} else {
+					result = forms[i].value;
+				}
+			}
+			inputFields[forms[i].name] = result;
+		}
+	}
+	return inputFields;
+}
+
 export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, 
 	getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch, 
-	updateOrderBy, updateInputChange, updateClearField };
+	updateOrderBy, updateInputChange, updateClearField, loadInputFields };
