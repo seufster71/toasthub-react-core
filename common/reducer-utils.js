@@ -3,48 +3,48 @@ import {Route, Redirect} from 'react-router';
 import PropTypes from 'prop-types';
 import fuLogger from './fu-logger';
 
-const getAppForms = (action) => {
-  let myAppForms = {};
-  if (action.responseJson.params.appPageFormFields != null) {
-    const appForms = action.responseJson.params.appPageFormFields;
-    for (let fieldKey in appForms) {
-      myAppForms[fieldKey] = appForms[fieldKey];
+const getPrefForms = (action) => {
+  let myPrefForms = {};
+  if (action.responseJson.params.prefFormFields != null) {
+    const prefForms = action.responseJson.params.prefFormFields;
+    for (let fieldKey in prefForms) {
+      myPrefForms[fieldKey] = prefForms[fieldKey];
     }
   }
-  return myAppForms;
+  return myPrefForms;
 };
 
-const getAppTexts = (action) => {
-  let myAppTexts = {};
-  if (action.responseJson.params.appPageTexts != null) {
-    const appTexts = action.responseJson.params.appPageTexts;
-    for (let textKey in appTexts) {
-      myAppTexts[textKey] = appTexts[textKey];
+const getPrefTexts = (action) => {
+  let myPrefTexts = {};
+  if (action.responseJson.params.prefTexts != null) {
+    const prefTexts = action.responseJson.params.prefTexts;
+    for (let textKey in prefTexts) {
+      myPrefTexts[textKey] = prefTexts[textKey];
     }
   }
-  return myAppTexts;
+  return myPrefTexts;
 };
 
-const getAppLabels = (action) => {
-  let myAppLabels = {};
-  if (action.responseJson.params.appPageLabels != null) {
-    const appLabels = action.responseJson.params.appPageLabels;
-    for (let labelKey in appLabels) {
-      myAppLabels[labelKey] = appLabels[labelKey];
+const getPrefLabels = (action) => {
+  let myPrefLabels = {};
+  if (action.responseJson.params.prefLabels != null) {
+    const prefLabels = action.responseJson.params.prefLabels;
+    for (let labelKey in prefLabels) {
+      myPrefLabels[labelKey] = prefLabels[labelKey];
     }
   }
-  return myAppLabels;
+  return myPrefLabels;
 };
 
-const getAppOptions = (action) => {
-  let myAppOptions = {};
-  if (action.responseJson.params.appPageOptions != null) {
-    const appOptions = action.responseJson.params.appPageOptions;
-    for (let optionKey in appOptions) {
-      myAppOptions[optionKey] = appOptions[optionKey];
+const getPrefOptions = (action) => {
+  let myPrefOptions = {};
+  if (action.responseJson.params.prefOptions != null) {
+    const prefOptions = action.responseJson.params.prefOptions;
+    for (let optionKey in prefOptions) {
+      myPrefOptions[optionKey] = prefOptions[optionKey];
     }
   }
-  return myAppOptions;
+  return myPrefOptions;
 };
 
 const getColumns = (action) => {
@@ -181,6 +181,6 @@ const loadInputFields = (item,forms,inputFields) => {
 	return inputFields;
 }
 
-export default { getAppForms, getAppTexts, getAppLabels, getAppOptions, getColumns, 
+export default { getPrefForms, getPrefTexts, getPrefLabels, getPrefOptions, getColumns, 
 	getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch, 
 	updateOrderBy, updateInputChange, updateClearField, loadInputFields };

@@ -313,12 +313,12 @@ const hasPermission = (permissions,code,rights) => {
 const getListLimit = (appPrefs, listLimit, fieldName) => {
 	let myListLimit = 20;
 	if (listLimit == null){
-		if(appPrefs != null && appPrefs.appOptions != null && appPrefs.appOptions.GLOBAL_PAGE != null &&
-			appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT != null) {
-			if (appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value != "") {
-				myListLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value);
-			} else if (appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue != ""){
-				myListLimit = parseInt(appPrefs.appOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue);
+		if(appPrefs != null && appPrefs.prefOptions != null && appPrefs.prefOptions.GLOBAL_PAGE != null &&
+			appPrefs.prefOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT != null) {
+			if (appPrefs.prefOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value != "") {
+				myListLimit = parseInt(appPrefs.prefOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.value);
+			} else if (appPrefs.prefOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue != ""){
+				myListLimit = parseInt(appPrefs.prefOptions.GLOBAL_PAGE.GLOBAL_PAGE_PAGELIMIT.defaultValue);
 			}
 		}
 	}

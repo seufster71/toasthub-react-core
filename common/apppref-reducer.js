@@ -4,16 +4,16 @@ export default function appPrefReducer(state = {}, action) {
     case 'LOAD_INIT': {
       return processInit(state,action);
     }
-    case 'SAVE_APPTEXTS':
-      return state.appTexts;
-    case 'SAVE_APPLABELS':
-      return state.appLabels;
-    case 'SAVE_APPOPTIONS':
-      return state.appOptions;
+    case 'SAVE_PREFTEXTS':
+      return state.prefTexts;
+    case 'SAVE_PREFLABELS':
+      return state.prefLabels;
+    case 'SAVE_PREFOPTIONS':
+      return state.prefOptions;
     case 'SAVE_LANG':
       return state.lang;
     case 'SAVE_GLOBAL':
-      return state.appGlobal;
+      return state.prefGlobal;
     default:
       return state;
   }
@@ -21,38 +21,38 @@ export default function appPrefReducer(state = {}, action) {
 
 const processInit = (state,action) => {
   if (action.responseJson != null && action.responseJson.params != null) {
-    let myAppForms = {};
-    if (action.responseJson.params.appPageFormFields != null) {
-      const appForms = action.responseJson.params.appPageFormFields;
-      for (let fieldKey in appForms) {
-        myAppForms[fieldKey] = appForms[fieldKey];
+    let myPrefForms = {};
+    if (action.responseJson.params.prefFormFields != null) {
+      const prefForms = action.responseJson.params.prefFormFields;
+      for (let fieldKey in prefForms) {
+        myPrefForms[fieldKey] = prefForms[fieldKey];
       }
     }
-    let myAppTexts = {};
-    if (action.responseJson.params.appPageTexts != null) {
-      const appTexts = action.responseJson.params.appPageTexts;
-      for (let textKey in appTexts) {
-        myAppTexts[textKey] = appTexts[textKey];
+    let myPrefTexts = {};
+    if (action.responseJson.params.prefTexts != null) {
+      const prefTexts = action.responseJson.params.prefTexts;
+      for (let textKey in prefTexts) {
+        myPrefTexts[textKey] = prefTexts[textKey];
       }
     }
-    let myAppLabels = {};
-    if (action.responseJson.params.appPageLabels != null) {
-      const appLabels = action.responseJson.params.appPageLabels;
-      for (let labelKey in appLabels) {
-        myAppLabels[labelKey] = appLabels[labelKey];
+    let myPrefLabels = {};
+    if (action.responseJson.params.prefLabels != null) {
+      const prefLabels = action.responseJson.params.prefLabels;
+      for (let labelKey in prefLabels) {
+        myPrefLabels[labelKey] = prefLabels[labelKey];
       }
     }
-    let myAppOptions = {};
-    if (action.responseJson.params.appPageOptions != null) {
-      const appOptions = action.responseJson.params.appPageOptions;
-      for (let optionKey in appOptions) {
-        myAppOptions[optionKey] = appOptions[optionKey];
+    let myPrefOptions = {};
+    if (action.responseJson.params.prefOptions != null) {
+      const prefOptions = action.responseJson.params.prefOptions;
+      for (let optionKey in prefOptions) {
+        myPrefOptions[optionKey] = prefOptions[optionKey];
       }
     }
-    let myAppGlobal = {};
+    let myPrefGlobal = {};
     let myLang = "en";
     if (action.responseJson.params.LANGUAGES != null) {
-      myAppGlobal.LANGUAGES = action.responseJson.params.LANGUAGES;
+      myPrefGlobal.LANGUAGES = action.responseJson.params.LANGUAGES;
       const languages = action.responseJson.params.LANGUAGES;
       for (let i = 0; i < languages.length; i++) {
         if (languages[i].defaultLang) {
@@ -61,11 +61,11 @@ const processInit = (state,action) => {
       }
     }
     return Object.assign({}, state, {
-      appForms: Object.assign({}, state.appForms, myAppForms),
-      appTexts: Object.assign({}, state.appTexts, myAppTexts),
-      appLabels: Object.assign({}, state.appLabels, myAppLabels),
-      appOptions: Object.assign({}, state.appOptions, myAppOptions),
-      appGlobal: Object.assign({}, state.appGlobal, myAppGlobal),
+      prefForms: Object.assign({}, state.prefForms, myPrefForms),
+      prefTexts: Object.assign({}, state.prefTexts, myPrefTexts),
+      prefLabels: Object.assign({}, state.prefLabels, myPrefLabels),
+      prefOptions: Object.assign({}, state.prefOptions, myPrefOptions),
+      prefGlobal: Object.assign({}, state.prefGlobal, myPrefGlobal),
       lang:myLang
     });
   } else {

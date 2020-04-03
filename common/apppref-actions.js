@@ -8,11 +8,11 @@ export function initPublic() {
     let requestParams = {};
     requestParams.action = "INIT";
     requestParams.service = "PUBLIC_SVC";
-    requestParams.appForms = new Array("LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
-    requestParams.appTexts = new Array("GLOBAL_PAGE","LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM","PASSWORD_CHANGE_FORM");
-    requestParams.appLabels = new Array("LOGIN_FORM","REGISTRATION_FORM","FORGOTPASSWORD_FORM");
-    requestParams.appOptions = new Array("REGISTRATION_FORM","GLOBAL_PAGE");
-    requestParams.appGlobal = new Array("LANGUAGES");
+    requestParams.prefForms = new Array("LOGIN_PAGE","REGISTRATION_PAGE","FORGOTPASSWORD_PAGE","PASSWORD_CHANGE_PAGE");
+    requestParams.prefTexts = new Array("GLOBAL_PAGE","LOGIN_PAGE","REGISTRATION_PAGE","FORGOTPASSWORD_PAGE","PASSWORD_CHANGE_PAGE");
+    requestParams.prefLabels = new Array("LOGIN_PAGE","REGISTRATION_PAGE","FORGOTPASSWORD_PAGE");
+    requestParams.prefOptions = new Array("REGISTRATION_PAGE","GLOBAL_PAGE");
+    requestParams.prefGlobal = new Array("LANGUAGES");
     requestParams.menuNames = new Array("PUBLIC_MENU_RIGHT");
     let params = {};
     params.requestParams = requestParams;

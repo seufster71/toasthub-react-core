@@ -38,7 +38,7 @@ class LoginContainer extends Component {
     }
     handleChange(fieldName) {
       return (event) => {
-        if (this.props.codeType === 'NATIVE') {
+        if (this.props.appPrefs.codeType === 'NATIVE') {
           this.setState({[fieldName]:event.nativeEvent.text});
         } else {
           this.setState({[fieldName]:event.target.value});
@@ -67,7 +67,7 @@ class LoginContainer extends Component {
         let fieldName = "";
         let fieldParts;
         let value = "";
-        if (this.props.codeType === 'NATIVE') {
+        if (this.props.appPrefs.codeType === 'NATIVE') {
           fieldName = e;
           fieldParts = e.split("-");
           value = event.nativeEvent.text;
@@ -84,7 +84,7 @@ class LoginContainer extends Component {
           // validate field
           let targetObj = {};
           targetObj[fieldName] = value;
-          let validateReg = utils.validateFields({state:this.state,fields:this.props.appForms[fieldParts[0]],lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:fieldParts[0],fieldList:[fieldParts[1]]});
+          let validateReg = utils.validateFields({state:this.state,fields:this.props.appPrefs.prefForms[fieldParts[0]],lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,group:"MAIN",prefix:fieldParts[0],fieldList:[fieldParts[1]]});
           myState.isValid = validateReg.isValid;
           let errorMap = Object.assign({}, this.state.errorMap, validateReg.errorMap);
           myState.errorMap = errorMap;
@@ -96,7 +96,7 @@ class LoginContainer extends Component {
     buttonClick(e) {
       return (event) => {
         let fieldName = "";
-        if (this.props.codeType === 'NATIVE') {
+        if (this.props.appPrefs.codeType === 'NATIVE') {
           fieldName = e;
         } else {
           event.preventDefault();
@@ -104,22 +104,22 @@ class LoginContainer extends Component {
         }
         fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"click"});
         if (fieldName === "LOGIN_FORM_SUBMIT_BUTTON") {
-          let validateLogin = utils.validateFields({state:this.state,fields:this.props.appForms.LOGIN_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:"LOGIN_FORM"});
+          let validateLogin = utils.validateFields({state:this.state,fields:this.props.appPrefs.prefForms.LOGIN_PAGE,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,group:"MAIN",prefix:"LOGIN_FORM"});
           if (validateLogin.isValid == true) {
-            let inputFields = utils.marshallFields({state:this.state,fields:this.props.appForms.LOGIN_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,prefix:"LOGIN_FORM"});
+            let inputFields = utils.marshallFields({state:this.state,fields:this.props.appPrefs.prefForms.LOGIN_PAGE,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,prefix:"LOGIN_FORM"});
             let params = {};
 
-            this.props.actions.authenticate(inputFields, this.props.lang);
+            this.props.actions.authenticate(inputFields, this.props.appPrefs.lang);
            // this.props.history.replace("/member");
           } else {
             // show error
             fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"Password is not valid "});
           }
         } else if (fieldName === "REGISTRATION_FORM_SUBMIT_BUTTON") {
-          let validateReg = utils.validateFields({state:this.state,fields:this.props.appForms.REGISTRATION_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:"REGISTRATION_FORM"});
+          let validateReg = utils.validateFields({state:this.state,fields:this.props.appPrefs.prefForms.REGISTRATION_PAGE,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,group:"MAIN",prefix:"REGISTRATION_FORM"});
           if (validateReg.isValid == true) {
-            let inputFields = utils.marshallFields({state:this.state,fields:this.props.appForms.REGISTRATION_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,prefix:"REGISTRATION_FORM"});
-            this.props.actions.register(inputFields, this.props.lang);
+            let inputFields = utils.marshallFields({state:this.state,fields:this.props.appPrefs.prefForms.REGISTRATION_PAGE,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,prefix:"REGISTRATION_FORM"});
+            this.props.actions.register(inputFields, this.props.appPrefs.lang);
           } else {
             // show error
             let myState = {};
@@ -128,10 +128,10 @@ class LoginContainer extends Component {
             this.setState(Object.assign({}, this.state, myState));
           }
         } else if (fieldName === "FORGOTPASSWORD_FORM_SUBMIT_BUTTON") {
-          let validateReg = utils.validateFields({state:this.state,fields:this.props.appForms.FORGOTPASSWORD_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,group:"MAIN",prefix:"FORGOTPASSWORD_FORM"});
+          let validateReg = utils.validateFields({state:this.state,fields:this.props.appPrefs.prefForms.FORGOTPASSWORD_PAGE,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,group:"MAIN",prefix:"FORGOTPASSWORD_FORM"});
           if (validateReg.isValid == true) {
-            let inputFields = utils.marshallFields({state:this.state,fields:this.props.appForms.FORGOTPASSWORD_FORM,lang:this.props.lang,languages:this.props.appGlobal.LANGUAGES,prefix:"FORGOTPASSWORD_FORM"});
-            this.props.actions.forgotPassword(inputFields, this.props.lang);
+            let inputFields = utils.marshallFields({state:this.state,fields:this.props.appPrefs.prefForms.FORGOTPASSWORD_PAGE,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,prefix:"FORGOTPASSWORD_FORM"});
+            this.props.actions.forgotPassword(inputFields, this.props.appPrefs.lang);
           } else {
             // show error
             let myState = {};
@@ -145,14 +145,14 @@ class LoginContainer extends Component {
     }
 
     render() {
-      if (this.props.appForms != null && this.props.appTexts != null
-        && this.props.appLabels != null) {
+      if (this.props.appPrefs != null && this.props.appPrefs.prefForms != null && this.props.appPrefs.prefTexts != null
+        && this.props.appPrefs.prefLabels != null) {
         return (
           <LoginView
             currentState={this.state}
-            fields={this.props.appForms}
-            texts={this.props.appTexts}
-            labels={this.props.appLabels}
+            fields={this.props.appPrefs.prefForms}
+            texts={this.props.appPrefs.prefTexts}
+            labels={this.props.appPrefs.prefLabels}
             onChangeLogin={this.showLogin}
             onChangeRegistration={this.showRegistration}
             onForgotPassword={this.showForgotPassword}
@@ -173,20 +173,13 @@ class LoginContainer extends Component {
 }
 
 LoginContainer.propTypes = {
-  appForms: PropTypes.object,
-  appTexts: PropTypes.object,
-  appLabels: PropTypes.object,
-  appOptions: PropTypes.object,
-  appGlobal: PropTypes.object,
+  appPrefs: PropTypes.object,
   actions: PropTypes.object,
-  lang: PropTypes.string,
-  codeType: PropTypes.string,
   history: PropTypes.object
 };
 
 function mapStateToProps(state, ownProps) {
-  return {appForms:state.appPrefs.appForms, appLabels:state.appPrefs.appLabels, appTexts:state.appPrefs.appTexts,
-    appOptions:state.appPrefs.appOptions, lang:state.appPrefs.lang, codeType:state.appPrefs.codeType, appGlobal:state.appPrefs.appGlobal};
+  return {appPrefs:state.appPrefs};
 }
 
 function mapDispatchToProps(dispatch) {
