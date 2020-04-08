@@ -356,7 +356,7 @@ export const PrivateRoute = ({component:Component, path:Path, permissions:Permis
   )} />
 );
 
-const validateFormFields = (formFields, inputFields, languages) => {
+const validateFormFields = (formFields, inputFields, languages, group) => {
 	  
 	let isValidTmp = true;
 	let errorMapTmp = {};
@@ -368,6 +368,11 @@ const validateFormFields = (formFields, inputFields, languages) => {
 	for( let i = 0, len = formFields.length; i < len; i++ ) {
 	    
 		if(formFields[i].rendered) {
+			if (group != null && group != "") {
+				if (formFields[i].group != group){
+					continue;
+				}
+			}
 			switch (formFields[i].fieldType) {
 		        case "MTXT": {
 		        	// Default text
