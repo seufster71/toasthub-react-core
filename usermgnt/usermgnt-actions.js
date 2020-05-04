@@ -14,7 +14,7 @@ export function authenticate(inputFields,lang) {
 		let requestParams = {};
 		requestParams.action = "LOGINAUTHENTICATE";
 		requestParams.service = "LOGIN_SVC";
-		requestParams.prefForms = ["LOGIN_PAGE"];
+		requestParams.prefFormKeys = ["LOGIN_PAGE"];
 		requestParams.lang = lang;
 		let params = {};
 		params.requestParams = requestParams;
@@ -49,7 +49,7 @@ export function register(inputFields, lang) {
     let requestParams = {};
     requestParams.action = "REGISTERFULL";
     requestParams.service = "LOGIN_SVC";
-    requestParams.prefForms = ["REGISTRATION_PAGE"];
+    requestParams.prefFormKeys = ["REGISTRATION_PAGE"];
     requestParams.inputFields = inputFields;
     requestParams.lang = lang;
     let params = {};
@@ -85,7 +85,7 @@ export function forgotPassword(inputFields, lang) {
     let requestParams = {};
     requestParams.action = "FORGOTPASSWORD";
     requestParams.service = "LOGIN_SVC";
-    requestParams.prefForms = ["FORGOTPASSWORD_PAGE"];
+    requestParams.prefFormKeys = ["FORGOTPASSWORD_PAGE"];
     requestParams.inputFields = inputFields;
     requestParams.lang = lang;
     let params = {};

@@ -142,30 +142,39 @@ const updateClearField = (state,action) => {
     }
 }
 
-const loadInputFields = (item,forms,inputFields) => {
-	for (let i = 0; i < forms.length; i++) {
+const loadInputFields = (item,forms,inputFields,languages) => {
+	let mgrp = null;
+	for (let i = 0, len = forms.length; i < len; i++) {
 		let classModel = JSON.parse(forms[i].classModel);
-		if (item != null && item.hasOwnProperty(classModel.field)) {
+
+		if (forms[i].subGroup != null) {
+			continue;
+		} else if (item != null && item.hasOwnProperty(classModel.field)) {
+			// if item exists
 			if (classModel.defaultClazz != null) {
 				inputFields[forms[i].name+"-DEFAULT"] = item[classModel.field].defaultText;
 			}
 			if (classModel.textClazz != null) {
-				for (let j = 0; j < item[classModel.field].langTexts.length; j++) {
+				for (let j = 0, jlen = item[classModel.field].langTexts.length; j < jlen; j++) {
 					inputFields[forms[i].name+"-TEXT-"+item[classModel.field].langTexts[j].lang] = item[classModel.field].langTexts[j].text;
 				}
 			}
-			if (classModel.type == "Object") {
-				inputFields[forms[i].name] = "Object";
+			if (classModel.type === "Set") {
+				mgrp = forms[i];
+				inputFields[forms[i].name] = "SET";
+			} else if (classModel.type === "Object") {
+				inputFields[forms[i].name] = "OBJECT";
 			} else {
 				inputFields[forms[i].name] = item[classModel.field];
 			}
 		} else {
+			// no item add empty fields
 			let result = "";
 			if (forms[i].value != null && forms[i].value != ""){
 				if (forms[i].value.includes("{")) {
 					let formValue = JSON.parse(forms[i].value);
 					if (formValue.options != null) {
-						for (let j = 0; j < formValue.options.length; j++) {
+						for (let j = 0, jlen = formValue.options.length; j < jlen; j++) {
 							if (formValue.options[j] != null && formValue.options[j].defaultInd == true){
 								result = formValue.options[j].value;
 							}
@@ -176,6 +185,24 @@ const loadInputFields = (item,forms,inputFields) => {
 				}
 			}
 			inputFields[forms[i].name] = result;
+		}
+	}
+	// process sub groups
+	if (mgrp != null) {
+		for (let i = 0, len = forms.length; i < len; i++) {
+			let classModel = JSON.parse(forms[i].classModel);
+			let subClassModel = JSON.parse(mgrp.classModel);
+			if (forms[i].subGroup != null && forms[i].subGroup == subClassModel.groupName) {
+				if (item != null && item.hasOwnProperty(subClassModel.field)) {
+					let itemSubs = item[subClassModel.field];
+					for(let j = 0, jlen = itemSubs.length; j < jlen; j++) {
+						if(itemSubs[j].hasOwnProperty(classModel.field)) {
+							let formName = forms[i].name+"-"+itemSubs[j].lang;
+							inputFields[formName] = itemSubs[j][classModel.field];
+						}
+					}
+				}
+			}
 		}
 	}
 	return inputFields;
