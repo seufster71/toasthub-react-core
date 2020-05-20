@@ -35,7 +35,7 @@ const validateFields = (params) => {
           errorMapTmp = Object.assign({}, errorMapTmp, resultTXT.errorMap);
           break;
         }
-        case "TXTA": {
+        case "TXTAREA": {
           let resultTXTA = validateFieldTXTA(params.state, field);
           if (resultTXTA.isValid == false) {
             isValidTmp = resultTXTA.isValid;
@@ -103,7 +103,8 @@ const marshallFields = (params) => {
 	          resultObj[params.fields[i].name] = params.state[fieldName];
 	          break;
 	        }
-	        case "TXTA": {
+	        case "TXTAREA": {
+	        	resultObj[params.fields[i].name] = params.state[fieldName];
 	          break;
 	        }
 	        case "BLN": {
@@ -408,8 +409,8 @@ const marshallFields = (params) => {
 			        	errorMapTmp = Object.assign({}, errorMapTmp, resultTXT.errorMap);
 			        	break;
 			        }
-			        case "TXTA": {
-			        	let resultTXTA = validateFieldTXTA(formFields[i],inputFields[formFields[i].name]);
+			        case "TXTAREA": {
+			        	let resultTXTA = validateFormFieldTXTA({field:formFields[i],value:inputFields[formFields[i].name]});
 			        	if (resultTXTA.isValid == false) {
 			        		isValidTmp = resultTXTA.isValid;
 			        	}
@@ -625,6 +626,103 @@ const marshallFields = (params) => {
 		}
 		return {isValid:isValidTXT, errorMap:errorMapTXT};
 	}; // validateFormFieldTXT
+	
+	const validateFormFieldTXTA = ({field, value, fieldName, langRequired}) => {
+		let isValidTXT = true;
+		let requiredError = false;
+		let errorMapTXT = {};
+		(langRequired != null && langRequired == true)
+		if (field.required ){
+			if (langRequired == null || (langRequired != null && langRequired == true)) {
+				if (value == null || (value != null && value == "")){
+					isValidTXT = false;
+					requiredError = true;
+					if (fieldName != null) {
+						errorMapTXT[fieldName] = "Required";
+					} else {
+						errorMapTXT[field.name] = "Required";
+					}
+			    } else {
+			    	if (fieldName != null) {
+			    		errorMapTXT[fieldName] = "";
+			    	} else {
+			    		errorMapTXT[field.name] = "";
+			    	}
+			    }
+			}
+		}
+		if (requiredError == false && field.validation != null && field.validation != "") {
+			let validateParams = JSON.parse(field.validation);
+		    if (validateParams.regex != null && validateParams.regex != ""){
+		    	let regex = new RegExp(validateParams.regex);
+		    	if (regex != null && regex.exec(value) != null) {
+		    		// success
+		    		errorMapTXT[field.name] = "";
+		    		// clear sub errors
+		    		if (validateParams.onFail != null) {
+		    			let failRegexs = validateParams.onFail;
+		    			for(let j = 0; j < failRegexs.length; j++) {
+		    				errorMapTXT[failRegexs[j].link] = "SUCCESS";
+		    			}
+		    		}
+		    	} else {
+		    		// fail
+		    		if (validateParams.onFail != null) {
+		    			let failRegexs = validateParams.onFail;
+		    			for(let j = 0; j < failRegexs.length; j++) {
+		    				let fr = new RegExp(failRegexs[j].regex);
+		    				if (fr != null && fr.exec(value) == null) {
+		    					// fail
+		    					errorMapTXT[failRegexs[j].link] = "ERROR";
+		    				} else {
+		    					errorMapTXT[failRegexs[j].link] = "SUCCESS";
+		    				}
+		    			}
+		    		}
+		    		isValidTXT = false;
+		    		if (fieldName != null) {
+    		    		errorMapTXT[fieldName] = validateParams.errorMsg;
+    		    	} else {
+    		    		errorMapTXT[field.name] = validateParams.errorMsg;
+    		    	}
+		    	}
+		    } else if (validateParams.operator != null) {
+		    	switch (validateParams.operator) {
+		        	case "equals": {
+		        		if (validateParams.matchField != null) {
+		        			let matchField = "";
+		        			if (params.prefix != null) {
+		        				matchField = params.prefix.concat("-").concat(validateParams.matchField);
+		        			}
+		        			let theField = params.state[matchField];
+		        			if (theField != null && value === theField){
+		        				// success
+		        				if (fieldName != null) {
+		        		    		errorMapTXT[fieldName] = "";
+		        		    	} else {
+		        		    		errorMapTXT[field.name] = "";
+		        		    	}
+		        			} else {
+		        				// fail
+		        				isValidTXT = false;
+		        				if (fieldName != null) {
+		        		    		errorMapTXT[fieldName] = validateParams.errorMsg;
+		        		    	} else {
+		        		    		errorMapTXT[field.name] = validateParams.errorMsg;
+		        		    	}
+		        			}
+		        		}
+		        		break;
+		        	}
+		        	default: {
+
+		        		break;
+		        	}
+		    	}
+		    }
+		}
+		return {isValid:isValidTXT, errorMap:errorMapTXT};
+	}; // validateFormFieldTXTA
 
 	const validateFormFieldMDLSNG = ({field, value}) => {
 		let isValidMDLSNG = true;
