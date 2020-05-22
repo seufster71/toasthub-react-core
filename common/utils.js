@@ -127,6 +127,10 @@ const marshallFields = (params) => {
 	          }
 	          break;
 	        }
+	        case "DATE": {
+	        	resultObj[params.fields[i].name] = params.state[fieldName];
+		        break;
+	        }
 	        case "SLT": {
 	          resultObj[params.fields[i].name] = jQuery("#".concat(fieldName)).val();
 	          break;
@@ -418,6 +422,9 @@ const marshallFields = (params) => {
 			        	break;
 			        }
 			        case "BLN": {
+			        	break;
+			        }
+			        case "DATE": {
 			        	break;
 			        }
 			        case "MDLSNG": {
