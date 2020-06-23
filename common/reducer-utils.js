@@ -142,11 +142,13 @@ const updateClearField = (state,action) => {
     }
 }
 
-const loadInputFields = (item,forms,inputFields,languages) => {
+const loadInputFields = (item,forms,inputFields,appPrefs,group) => {
 	let mgrp = null;
 	for (let i = 0, len = forms.length; i < len; i++) {
 		let classModel = JSON.parse(forms[i].classModel);
-
+		if (group != null && forms[i].group != group) {
+			continue;
+		}
 		if (forms[i].subGroup != null) {
 			continue;
 		} else if (item != null && item.hasOwnProperty(classModel.field)) {
@@ -168,6 +170,9 @@ const loadInputFields = (item,forms,inputFields,languages) => {
 				inputFields[forms[i].name] = item[classModel.field];
 			}
 		} else {
+			if (classModel.type === "Set") {
+				mgrp = forms[i];
+			}
 			// no item add empty fields
 			let result = "";
 			if (forms[i].value != null && forms[i].value != ""){
@@ -177,6 +182,18 @@ const loadInputFields = (item,forms,inputFields,languages) => {
 						for (let j = 0, jlen = formValue.options.length; j < jlen; j++) {
 							if (formValue.options[j] != null && formValue.options[j].defaultInd == true){
 								result = formValue.options[j].value;
+							}
+						}
+					} else if (formValue.referPref != null) {
+						let pref = appPrefs.prefTexts[formValue.referPref.prefName][formValue.referPref.prefItem];
+						if (pref != null && pref.value != null && pref.value != "") {
+							let value = JSON.parse(pref.value);
+							if (value.options != null) {
+								for (let j = 0; j < value.options.length; j++) {
+									if (value.options[j] != null && value.options[j].defaultInd == true){
+										result = value.options[j].value;
+									}
+								}
 							}
 						}
 					}
@@ -189,9 +206,10 @@ const loadInputFields = (item,forms,inputFields,languages) => {
 	}
 	// process sub groups
 	if (mgrp != null) {
+		let subClassModel = JSON.parse(mgrp.classModel);
+		let languages = appPrefs.prefGlobal.LANGUAGES;
 		for (let i = 0, len = forms.length; i < len; i++) {
 			let classModel = JSON.parse(forms[i].classModel);
-			let subClassModel = JSON.parse(mgrp.classModel);
 			if (forms[i].subGroup != null && forms[i].subGroup == subClassModel.groupName) {
 				if (item != null && item.hasOwnProperty(subClassModel.field)) {
 					let itemSubs = item[subClassModel.field];
@@ -200,6 +218,38 @@ const loadInputFields = (item,forms,inputFields,languages) => {
 							let formName = forms[i].name+"-"+itemSubs[j].lang;
 							inputFields[formName] = itemSubs[j][classModel.field];
 						}
+					}
+				} else {
+					for (let l = 0, llen = languages.length; l < llen; l++) {
+						let formName = forms[i].name+"-"+languages[l].code;
+						let result = "";
+						if (forms[i].value != null && forms[i].value != ""){
+							if (forms[i].value.includes("{")) {
+								let formValue = JSON.parse(forms[i].value);
+								if (formValue.options != null) {
+									for (let j = 0, jlen = formValue.options.length; j < jlen; j++) {
+										if (formValue.options[j] != null && formValue.options[j].defaultInd == true){
+											result = formValue.options[j].value;
+										}
+									}
+								} else if (formValue.referPref != null) {
+									let pref = appPrefs.prefTexts[formValue.referPref.prefName][formValue.referPref.prefItem];
+									if (pref != null && pref.value != null && pref.value != "") {
+										let value = JSON.parse(pref.value);
+										if (value.options != null) {
+											for (let j = 0; j < value.options.length; j++) {
+												if (value.options[j] != null && value.options[j].defaultInd == true){
+													result = value.options[j].value;
+												}
+											}
+										}
+									}
+								}
+							} else {
+								result = forms[i].value;
+							}
+						}
+						inputFields[formName] = result;
 					}
 				}
 			}
