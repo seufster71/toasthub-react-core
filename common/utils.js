@@ -333,23 +333,40 @@ const marshallFields = (params) => {
 		return myListLimit;
 	};
 
-	const inputChange = (props,fieldName,switchValue,viewType) => {
-		let	value = null;
-		if (props.codeType === 'NATIVE') {
-			value = event.nativeEvent.text;
-		} else {
-			if (event != null) {
-				if (event.target != null) {
-					value = event.target.value;
+	const inputChange = ({type,props,field,value,event,viewType}) => {
+		let val = "";
+		if (value == null || value == "") {
+			if (props.codeType === 'NATIVE') {
+				val = event.nativeEvent.text;
+			} else {
+				if (event != null) {
+					if (event.target != null) {
+						val = event.target.value;
+					} else {
+						val = event;
+					}
 				} else {
-					value = event;
+					val = value;
 				}
 			}
+		} else {
+			val = value;
 		}
-		if (switchValue != null) {
-			value = switchValue;
+		if (type === "DATE") {
+			val = event.toISOString();
+			props.actions.inputChange(field,val,viewType);
+		} else if (type === "TEXT") {
+			props.actions.inputChange(field,val,viewType);
+		} else if (type === "SWITCH") {
+			props.actions.inputChange(field,val,viewType);
+		} else if (type === "SELECT") {
+			let x = {"label":val};
+			props.actions.selectChange({field,"value":x});
+		} else if (type === "SELECTCLICK") {
+			props.actions.selectClick({field,value});
 		}
-		props.actions.inputChange(fieldName,value,viewType);
+		
+		
 	};
 
 	const onBlur = (props,fieldName) => {
