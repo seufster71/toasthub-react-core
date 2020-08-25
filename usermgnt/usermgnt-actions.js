@@ -116,37 +116,26 @@ export function forgotPassword(inputFields, lang) {
   };
 }
 
-export const logout = () => (dispatch) => {
-  return new Promise( (resolve, reject) => {
-    let requestParams = {};
-    requestParams.action = "LOGOUT";
-    requestParams.service = "MEMBER_SVC";
-    let params = {};
-    params.requestParams = requestParams;
-    params.URI = '/api/member/callService';
+export function logout() {
+	return function(dispatch) {
+		let requestParams = {};
+		requestParams.action = "LOGOUT";
+		requestParams.service = "MEMBER_SVC";
+		let params = {};
+		params.requestParams = requestParams;
+		params.URI = '/api/member/callService';
 
-    return callService(params).then( (responseJson) => {
-      if (responseJson != null && responseJson.params != null && responseJson.params.status != null) {
-        if (responseJson.params.status.error != null) {
-          dispatch({type:'SHOW_STATUS_ERROR',error:responseJson.params.status.error});
-        } else if (responseJson.params.status.info != null) {
-          let status = "fail";
-          let statuses = responseJson.params.status.info;
-          for (let i = 0; i < statuses.length; i++) {
-            if (statuses[i].code === "success") {
-              status = "success";
-            }
-          }
-          if (status === "success") {
-            dispatch({ type: "PROCESS_LOGOUT", responseJson })
-            resolve();
-          }
-        }
-      }
-    }).catch(error => {
-      //throw(error);
-      reject(error);
-    });
-  });
+		return callService(params).then( (responseJson) => {
+			if (responseJson != null && responseJson.protocalError == null) {
+				if (responseJson.status == "SUCCESS") {
+					dispatch({ type: "PROCESS_LOGOUT", responseJson })
+				} else if (responseJson.errors != null) {
+					dispatch({type:'SHOW_STATUS_ERROR',errors:responseJson.errors});
+				}
+			}
+		}).catch(error => {
+			throw(error);
+		});
+	};
 
 }
