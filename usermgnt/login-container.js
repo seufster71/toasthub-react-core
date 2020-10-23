@@ -104,9 +104,9 @@ class LoginContainer extends Component {
         }
         fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"click"});
         if (fieldName === "LOGIN_FORM_SUBMIT_BUTTON") {
-          let validateLogin = utils.validateFields({state:this.state,fields:this.props.appPrefs.prefForms.LOGIN_PAGE,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,group:"MAIN",prefix:"LOGIN_FORM"});
+          let validateLogin = utils.validateFields({state:this.state,fields:this.props.appPrefs.prefForms.LOGIN_FORM,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,group:"MAIN",prefix:"LOGIN_FORM"});
           if (validateLogin.isValid == true) {
-            let inputFields = utils.marshallFields({state:this.state,fields:this.props.appPrefs.prefForms.LOGIN_PAGE,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,prefix:"LOGIN_FORM"});
+            let inputFields = utils.marshallFields({state:this.state,fields:this.props.appPrefs.prefForms.LOGIN_FORM,lang:this.props.appPrefs.lang,languages:this.props.appPrefs.prefGlobal.LANGUAGES,prefix:"LOGIN_FORM"});
             let params = {};
 
             this.props.actions.authenticate(inputFields, this.props.appPrefs.lang);
