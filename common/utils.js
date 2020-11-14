@@ -360,8 +360,7 @@ const marshallFields = (params) => {
 		} else if (type === "SWITCH") {
 			props.actions.inputChange(field,val,viewType);
 		} else if (type === "SELECT") {
-			let x = {"label":val};
-			props.actions.selectChange({field,"value":x});
+			props.actions.selectChange({field,"value":val});
 		} else if (type === "SELECTCLICK") {
 			props.actions.selectClick({field,value});
 		}
@@ -436,6 +435,14 @@ const marshallFields = (params) => {
 			        		isValidTmp = resultTXTA.isValid;
 			        	}
 			        	errorMapTmp = Object.assign({}, errorMapTmp, resultTXTA.errorMap);
+			        	break;
+			        }
+			        case "INT": {
+			        	let resultINT = validateFormFieldINT({field:formFields[i],value:inputFields[formFields[i].name]});
+			        	if (resultINT.isValid == false) {
+			        		isValidTmp = resultINT.isValid;
+			        	}
+			        	errorMapTmp = Object.assign({}, errorMapTmp, resultINT.errorMap);
 			        	break;
 			        }
 			        case "BLN": {
@@ -808,6 +815,103 @@ const marshallFields = (params) => {
 		}
 		return {isValid:isValidMTXT, errorMap:errorMapMTXT};
 	}; // validateFormFieldMTXT
+	
+	const validateFormFieldINT = ({field, value, fieldName, langRequired}) => {
+		let isValidINT = true;
+		let requiredError = false;
+		let errorMapINT = {};
+		(langRequired != null && langRequired == true)
+		if (field.required ){
+			if (langRequired == null || (langRequired != null && langRequired == true)) {
+				if (value === null || (value != null && value === "")){
+					isValidINT = false;
+					requiredError = true;
+					if (fieldName != null) {
+						errorMapINT[fieldName] = "Required";
+					} else {
+						errorMapINT[field.name] = "Required";
+					}
+			    } else {
+			    	if (fieldName != null) {
+			    		errorMapINT[fieldName] = "";
+			    	} else {
+			    		errorMapINT[field.name] = "";
+			    	}
+			    }
+			}
+		}
+		if (requiredError == false && field.validation != null && field.validation != "") {
+			let validateParams = JSON.parse(field.validation);
+		    if (validateParams.regex != null && validateParams.regex != ""){
+		    	let regex = new RegExp(validateParams.regex);
+		    	if (regex != null && regex.exec(value) != null) {
+		    		// success
+		    		errorMapINT[field.name] = "";
+		    		// clear sub errors
+		    		if (validateParams.onFail != null) {
+		    			let failRegexs = validateParams.onFail;
+		    			for(let j = 0; j < failRegexs.length; j++) {
+		    				errorMapINT[failRegexs[j].link] = "SUCCESS";
+		    			}
+		    		}
+		    	} else {
+		    		// fail
+		    		if (validateParams.onFail != null) {
+		    			let failRegexs = validateParams.onFail;
+		    			for(let j = 0; j < failRegexs.length; j++) {
+		    				let fr = new RegExp(failRegexs[j].regex);
+		    				if (fr != null && fr.exec(value) == null) {
+		    					// fail
+		    					errorMapINT[failRegexs[j].link] = "ERROR";
+		    				} else {
+		    					errorMapINT[failRegexs[j].link] = "SUCCESS";
+		    				}
+		    			}
+		    		}
+		    		isValidINT = false;
+		    		if (fieldName != null) {
+    		    		errorMapINT[fieldName] = validateParams.errorMsg;
+    		    	} else {
+    		    		errorMapINT[field.name] = validateParams.errorMsg;
+    		    	}
+		    	}
+		    } else if (validateParams.operator != null) {
+		    	switch (validateParams.operator) {
+		        	case "equals": {
+		        		if (validateParams.matchField != null) {
+		        			let matchField = "";
+		        			if (params.prefix != null) {
+		        				matchField = params.prefix.concat("-").concat(validateParams.matchField);
+		        			}
+		        			let theField = params.state[matchField];
+		        			if (theField != null && value === theField){
+		        				// success
+		        				if (fieldName != null) {
+		        		    		errorMapINT[fieldName] = "";
+		        		    	} else {
+		        		    		errorMapINT[field.name] = "";
+		        		    	}
+		        			} else {
+		        				// fail
+		        				isValidINT = false;
+		        				if (fieldName != null) {
+		        		    		errorMapINT[fieldName] = validateParams.errorMsg;
+		        		    	} else {
+		        		    		errorMapINT[field.name] = validateParams.errorMsg;
+		        		    	}
+		        			}
+		        		}
+		        		break;
+		        	}
+		        	default: {
+
+		        		break;
+		        	}
+		    	}
+		    }
+		}
+		return {isValid:isValidINT, errorMap:errorMapINT};
+	}; // validateFormFieldINT
 
 	const getMultiLangLabel = (item, lang) => {
 		let label = item.title.defaultText;

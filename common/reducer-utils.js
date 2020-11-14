@@ -108,6 +108,17 @@ const updateSearch = (state,action) => {
     }
 }
 
+const updateSearchChange = (state,action) => {
+	if (action.searchCriteria != null) {
+		let clone = Object.assign({}, state);
+		clone.searchFieldName = action.fieldName;
+		clone.searchValue = action.value;
+		return clone;
+	} else {
+        return state;
+    }
+}
+
 const updateOrderBy = (state,action) => {
 	if (action.orderCriteria != null) {
 		let clone = Object.assign({}, state);
