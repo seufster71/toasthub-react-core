@@ -153,6 +153,16 @@ const updateClearField = (state,action) => {
     }
 }
 
+const updateErrors = (state,action) => {
+	if (action.errors != null) {
+		let clone = Object.assign({}, state);
+		clone.errors = action.errors;
+		return clone;
+	} else {
+        return state;
+    }
+}
+
 const loadInputFields = (item,forms,inputFields,appPrefs,group) => {
 	let mgrp = null;
 	for (let i = 0, len = forms.length; i < len; i++) {
@@ -271,4 +281,4 @@ const loadInputFields = (item,forms,inputFields,appPrefs,group) => {
 
 export default { getPrefForms, getPrefTexts, getPrefLabels, getPrefOptions, getColumns, 
 	getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch, 
-	updateOrderBy, updateInputChange, updateClearField, loadInputFields };
+	updateOrderBy, updateInputChange, updateClearField, updateErrors, loadInputFields };

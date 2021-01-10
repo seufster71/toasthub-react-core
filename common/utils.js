@@ -363,8 +363,9 @@ const marshallFields = (params) => {
 			props.actions.selectChange({field,"value":val});
 		} else if (type === "SELECTCLICK") {
 			props.actions.selectClick({field,value});
+		} else if (type === "SELECTUPDATE") {
+			props.actions.selectListUpdate({field,"value":val});
 		}
-		
 		
 	};
 
