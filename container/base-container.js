@@ -74,11 +74,13 @@ class BaseContainer extends Component {
 	onSearchClick = (fieldName, event) => {
 		let state = this.getState();
 		let searchCriteria = [];
-		if (fieldName === 'PM_TEAM-SEARCHBY') {
+		let form = this.getForm();
+		let name = form + '-SEARCHBY';
+		if (fieldName === name) {
 			if (event != null) {
 				for (let o = 0; o < event.length; o++) {
 					let option = {};
-					option.searchValue = this.state['PM_TEAM-SEARCH'];
+					option.searchValue = this.state['ITEM-SEARCH'];
 					option.searchColumn = event[o].value;
 					searchCriteria.push(option);
 				}
@@ -86,7 +88,7 @@ class BaseContainer extends Component {
 		} else {
 			for (let i = 0; i < state.searchCriteria.length; i++) {
 				let option = {};
-				option.searchValue = this.state['PM_TEAM-SEARCH'];
+				option.searchValue = this.state['ITEM-SEARCH'];
 				option.searchColumn = state.searchCriteria[i].searchColumn;
 				searchCriteria.push(option);
 			}
