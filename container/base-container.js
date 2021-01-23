@@ -99,6 +99,7 @@ class BaseContainer extends Component {
 	
 	onOrderBy = (selectedOption, event) => {
 		fuLogger.log({level:'TRACE',loc:'BaseContainer::onOrderBy',msg:"id " + selectedOption});
+		let state = this.getState();
 		let orderCriteria = [];
 		if (event != null) {
 			for (let o = 0; o < event.length; o++) {
@@ -115,10 +116,11 @@ class BaseContainer extends Component {
 				orderCriteria.push(option);
 			}
 		} else {
-			let option = {orderColumn:"PM_TEAM_TABLE_NAME",orderDir:"ASC"};
+			let orderColumn = state.pageName+"_TABLE_NAME";
+			let option = {orderColumn,orderDir:"ASC"};
 			orderCriteria.push(option);
 		}
-		this.props.actions.orderBy({state:this.props.pmteam,orderCriteria});
+		this.props.actions.orderBy({state,orderCriteria});
 	}
 	
 	inputChange = (type,field,value,event) => {
@@ -141,11 +143,12 @@ class BaseContainer extends Component {
 	
 	onModify = (item) => {
 		let id = null;
+		let state = this.getState();
 		if (item != null && item.id != null) {
 			id = item.id;
 		}
 		fuLogger.log({level:'TRACE',loc:'BaseContainer::onModify',msg:"item id "+id});
-		this.props.actions.modifyItem({id,appPrefs:this.props.appPrefs});
+		this.props.actions.modifyItem({state,id,appPrefs:this.props.appPrefs});
 	}
 	
 	onDelete = (item) => {
