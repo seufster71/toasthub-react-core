@@ -57,30 +57,37 @@ class BaseContainer extends Component {
 		this.props.actions.list({state,listStart,paginationSegment});
 	}
 	
-	onSearchChange = (fieldName, event) => {
+	onSearchChange = (field, event) => {
 		if (event.type === 'keypress') {
 			if (event.key === 'Enter') {
-				this.onSearchClick(fieldName,event);
+				this.onSearchClick(field,event);
 			}
 		} else {
+			let value = "";
 			if (this.props.codeType === 'NATIVE') {
-			//	this.setState({[fieldName]:event.nativeEvent.text});
+				value = event.nativeEvent.text;
 			} else {
-			//	this.setState({[fieldName]:event.target.value});
+				if (event != null) {
+					if (event.target != null) {
+						value = event.target.value;
+					} else {
+						value = event;
+					}
+				}
 			}
+			this.props.actions.searchChange({value});
 		}
 	}
 
 	onSearchClick = (fieldName, event) => {
 		let state = this.getState();
 		let searchCriteria = [];
-		let form = this.getForm();
-		let name = form + '-SEARCHBY';
+		let name = state.pageName + '-SEARCHBY';
 		if (fieldName === name) {
 			if (event != null) {
 				for (let o = 0; o < event.length; o++) {
 					let option = {};
-					option.searchValue = this.state['ITEM-SEARCH'];
+					option.searchValue = state.searchValue;
 					option.searchColumn = event[o].value;
 					searchCriteria.push(option);
 				}
@@ -88,7 +95,7 @@ class BaseContainer extends Component {
 		} else {
 			for (let i = 0; i < state.searchCriteria.length; i++) {
 				let option = {};
-				option.searchValue = this.state['ITEM-SEARCH'];
+				option.searchValue = state.searchValue;
 				option.searchColumn = state.searchCriteria[i].searchColumn;
 				searchCriteria.push(option);
 			}
