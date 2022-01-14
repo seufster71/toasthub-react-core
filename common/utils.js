@@ -1,5 +1,6 @@
 import React from 'react';
-import {Route, Redirect} from 'react-router';
+import {Route} from 'react-router-dom';
+import {StaticRouter} from 'react-router-dom/server';
 import PropTypes from 'prop-types';
 import fuLogger from './fu-logger';
 
@@ -373,13 +374,13 @@ const marshallFields = (params) => {
 		
 	};
 
-	export const PrivateRoute = ({component:Component, path:Path, permissions:Permissions, code:Code, minRights:MinRights, pathto:PathTo}) => (
-	  <Route path={Path} render={(props) => (
-	            hasPermission(Permissions,Code,MinRights)
-	            ? <Component {...props}/>
-	            : <Redirect to={PathTo}/>
-	  )} />
-	);
+	export const PrivateRoute = ({component:Component, path:Path, permissions:Permissions, code:Code, minRights:MinRights, pathto:PathTo}) => {
+	    if (hasPermission(Permissions,Code,MinRights)) {
+			return <Component {...props}/>;
+		} else {
+			return <StaticRouter location={PathTo}/>;
+		}
+	};
 
 	const validateFormFields = (formFields, inputFields, languages, group) => {
 		  

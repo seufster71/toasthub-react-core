@@ -1,4 +1,5 @@
 import callService from '../api/api-call';
+import { encode } from "base-64";
 
 // actions
 export function initLogin(params) {
@@ -18,7 +19,7 @@ export function authenticate(inputFields,lang) {
 		requestParams.lang = lang;
 		let params = {};
 		params.requestParams = requestParams;
-		params.auth = Buffer.from(inputFields.LOGIN_FORM_USERNAME + ":" + inputFields.LOGIN_FORM_PASSWORD).toString('base64');
+		params.auth = encode(inputFields.LOGIN_FORM_USERNAME + ":" + inputFields.LOGIN_FORM_PASSWORD);
 		params.URI = '/api/usermgmt/callService';
 
 		return callService(params).then( (responseJson) => {

@@ -4,7 +4,6 @@
 */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import callService from '../api/api-call';
 import LoginView from '../../coreView/usermgnt/login-view';
 import utils from '../common/utils';
 import {connect} from 'react-redux';
@@ -12,7 +11,6 @@ import * as userManagementActions from './usermgnt-actions';
 import {bindActionCreators} from 'redux';
 import InfoView from '../../coreView/common/info-view';
 import fuLogger from '../common/fu-logger';
-import {withRouter} from "react-router";
 
 class LoginContainer extends Component {
     constructor(props) {
@@ -186,4 +184,4 @@ function mapDispatchToProps(dispatch) {
   return { actions:bindActionCreators(userManagementActions,dispatch) };
 }
 
-export default withRouter(connect(mapStateToProps,mapDispatchToProps)(LoginContainer));
+export default connect(mapStateToProps,mapDispatchToProps)(LoginContainer);
