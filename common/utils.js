@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
-import {StaticRouter} from 'react-router-dom/server';
+import {Outlet, Navigate} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import fuLogger from './fu-logger';
 
@@ -21,7 +21,7 @@ const validateFields = (params) => {
       }
       switch (field.fieldType) {
         case "MTXT": {
-          let resultMTXT = validateFieldMTXT(params.state, field, params.languages);
+          let resultMTXT = validateFieldMTXT(params, field, params.languages);
           if (resultMTXT.isValid == false) {
             isValidTmp = resultMTXT.isValid;
           }
@@ -37,7 +37,7 @@ const validateFields = (params) => {
           break;
         }
         case "TXTAREA": {
-          let resultTXTA = validateFieldTXTA(params.state, field);
+          let resultTXTA = validateFieldTXTA(params, field);
           if (resultTXTA.isValid == false) {
             isValidTmp = resultTXTA.isValid;
           }
@@ -48,7 +48,7 @@ const validateFields = (params) => {
           break;
         }
         case "LTXT": {
-          let resultLTXT = validateFieldLTXT(params.state, field, params.languages, params.lang);
+          let resultLTXT = validateFieldLTXT(params, field, params.languages, params.lang);
           if (resultLTXT.isValid == false) {
             isValidTmp = resultLTXT.isValid;
           }
@@ -56,7 +56,7 @@ const validateFields = (params) => {
           break;
         }
         case "MDLSNG": {
-          let resultMDLSNG = validateFieldMDLSNG(params.state, field);
+          let resultMDLSNG = validateFieldMDLSNG(params, field);
           if (resultMDLSNG.isValid == false) {
             isValidTmp = resultMDLSNG.isValid;
           }
@@ -93,7 +93,7 @@ const marshallFields = (params) => {
 	          for(let j=0;j<params.languages.length;j++){
 	            if (params.languages[j].title.langTexts != null){
 	              for(let k=0;k<params.languages[j].title.langTexts.length;k++){
-	                ltxt[params.languages[j].code] = params.state[fieldName.concat("-").concat(params.languages[j].code)];
+	                ltxt[params.languages[j].code] = params.state.inputFields[fieldName.concat("-").concat(params.languages[j].code)];
 	              }
 	            }
 	          }
@@ -101,11 +101,11 @@ const marshallFields = (params) => {
 	          break;
 	        }
 	        case "TXT": {
-	          resultObj[params.fields[i].name] = params.state[fieldName];
+	          resultObj[params.fields[i].name] = params.state.inputFields[fieldName];
 	          break;
 	        }
 	        case "TXTAREA": {
-	        	resultObj[params.fields[i].name] = params.state[fieldName];
+	        	resultObj[params.fields[i].name] = params.state.inputFields[fieldName];
 	          break;
 	        }
 	        case "BLN": {
@@ -129,7 +129,7 @@ const marshallFields = (params) => {
 	          break;
 	        }
 	        case "DATE": {
-	        	resultObj[params.fields[i].name] = params.state[fieldName];
+	        	resultObj[params.fields[i].name] = params.state.inputFields[fieldName];
 		        break;
 	        }
 	        case "SLT": {
@@ -149,7 +149,7 @@ const marshallFields = (params) => {
 	          break;
 	        }
 	        case "MDLSNG": {
-	          resultObj[params.fields[i].name] = params.state[fieldName];
+	          resultObj[params.fields[i].name] = params.state.inputFields[fieldName];
 	          break;
 	        }
 	        default: {
@@ -166,7 +166,7 @@ const marshallFields = (params) => {
 
 	const validateFieldTXT = (params, field, fieldName) => {
 	  let isValidTXT = true;
-	  let txtValue = params.state[fieldName];
+	  let txtValue = params.state.inputFields[fieldName];
 	  let requiredError = false;
 	  let errorMapTXT = {};
 	  if (field.required){
@@ -217,7 +217,7 @@ const marshallFields = (params) => {
 	            if (params.prefix != null) {
 	              matchField = params.prefix.concat("-").concat(validateParams.matchField);
 	            }
-	            let theField = params.state[matchField];
+	            let theField = params.state.inputFields[matchField];
 	            if (theField != null && txtValue === theField){
 	              // success
 	              errorMapTXT[field.name] = "";
@@ -376,9 +376,9 @@ const marshallFields = (params) => {
 
 	export const PrivateRoute = ({component:Component, path:Path, permissions:Permissions, code:Code, minRights:MinRights, pathto:PathTo}) => {
 	    if (hasPermission(Permissions,Code,MinRights)) {
-			return <Component {...props}/>;
+			return <Outlet />;
 		} else {
-			return <StaticRouter location={PathTo}/>;
+			return <Navigate to={PathTo}/>;
 		}
 	};
 

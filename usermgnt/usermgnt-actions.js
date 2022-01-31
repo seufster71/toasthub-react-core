@@ -9,6 +9,18 @@ export function saveLang() {
   return { type:'SAVE_LANG' };
 }
 
+export function setView(view) {
+	return function(dispatch) {
+ 		dispatch({type:'USERMGNT_SET_VIEW',view});
+	}
+}
+
+export function setField(params) {
+	return function(dispatch) {
+ 		dispatch({type:'USERMGNT_SET_FIELD',params});
+	}
+}
+
 // thunks
 export function authenticate(inputFields,lang) {
 	return function(dispatch) {
