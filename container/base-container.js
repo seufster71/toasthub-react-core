@@ -14,193 +14,208 @@
  * limitations under the License.
  */
 'use-strict';
-import React, {Component} from 'react';
 import utils from '../../core/common/utils';
 import fuLogger from '../../core/common/fu-logger';
 
-
-class BaseContainer extends Component {
-	constructor(props) {
-		super(props);
+const onListLimitChange = ({state,actions,dispatch,appPrefs,fieldName,event}) => {
+	let value = 20;
+	if (appPrefs.codeType === "Native") {
+		value = event.nativeEvent.text;
+	} else {
+		value = event.target.value;
 	}
+
+	let listLimit = parseInt(value);
+	dispatch(actions.listLimit({state:state,listLimit}));
+}
 	
-	onListLimitChange = (fieldName, event) => {
-		let value = 20;
-		if (this.props.codeType === 'NATIVE') {
+const onPaginationClick = ({state,actions,dispatch,value}) => {
+	fuLogger.log({level:'TRACE',loc:'BaseContainer::onPaginationClick',msg:"fieldName "+ value});
+	let listStart = state.listStart;
+	let paginationSegment = 1;
+	let oldValue = 1;
+	if (state.paginationSegment != ""){
+		oldValue = state.paginationSegment;
+	}
+	if (value === "prev") {
+		paginationSegment = oldValue - 1;
+	} else if (value === "next") {
+		paginationSegment = oldValue + 1;
+	} else {
+		paginationSegment = value;
+	}
+	listStart = ((paginationSegment - 1) * state.listLimit);
+
+	dispatch(actions.list({state,listStart,paginationSegment}));
+}
+	
+const onSearchChange = ({state,actions,dispatch,appPrefs,field,event}) => {
+	if (event.type === 'keypress') {
+		if (event.key === 'Enter') {
+			onSearchClick({state,actions,dispatch,field,event});
+		}
+	} else {
+		let value = "";
+		if (appPrefs.codeType === 'NATIVE') {
 			value = event.nativeEvent.text;
 		} else {
-			value = event.target.value;
-		}
-
-		let listLimit = parseInt(value);
-		this.props.actions.listLimit({state:getState(),listLimit});
-	}
-	
-	onPaginationClick = (value) => {
-		fuLogger.log({level:'TRACE',loc:'BaseContainer::onPaginationClick',msg:"fieldName "+ value});
-		let state = this.getState();
-		let listStart = state.listStart;
-		let paginationSegment = 1;
-		let oldValue = 1;
-		if (state.paginationSegment != ""){
-			oldValue = state.paginationSegment;
-		}
-		if (value === "prev") {
-			paginationSegment = oldValue - 1;
-		} else if (value === "next") {
-			paginationSegment = oldValue + 1;
-		} else {
-			paginationSegment = value;
-		}
-		listStart = ((paginationSegment - 1) * state.listLimit);
-
-		this.props.actions.list({state,listStart,paginationSegment});
-	}
-	
-	onSearchChange = (field, event) => {
-		if (event.type === 'keypress') {
-			if (event.key === 'Enter') {
-				this.onSearchClick(field,event);
-			}
-		} else {
-			let value = "";
-			if (this.props.codeType === 'NATIVE') {
-				value = event.nativeEvent.text;
-			} else {
-				if (event != null) {
-					if (event.target != null) {
-						value = event.target.value;
-					} else {
-						value = event;
-					}
-				}
-			}
-			this.props.actions.searchChange({value});
-		}
-	}
-
-	onSearchClick = (fieldName, event) => {
-		let state = this.getState();
-		let searchCriteria = [];
-		let name = state.pageName + '-SEARCHBY';
-		if (fieldName === name) {
 			if (event != null) {
-				for (let o = 0; o < event.length; o++) {
-					let option = {};
-					option.searchValue = state.searchValue;
-					option.searchColumn = event[o].value;
-					searchCriteria.push(option);
+				if (event.target != null) {
+					value = event.target.value;
+				} else {
+					value = event;
 				}
 			}
-		} else {
-			for (let i = 0; i < state.searchCriteria.length; i++) {
-				let option = {};
-				option.searchValue = state.searchValue;
-				option.searchColumn = state.searchCriteria[i].searchColumn;
-				searchCriteria.push(option);
-			}
 		}
-
-		this.props.actions.search({state,searchCriteria});
+		//dispatch(actions.search({value}));
 	}
-	
-	onOrderBy = (selectedOption, event) => {
-		fuLogger.log({level:'TRACE',loc:'BaseContainer::onOrderBy',msg:"id " + selectedOption});
-		let state = this.getState();
-		let orderCriteria = [];
+}
+
+const onSearchClick = ({state,actions,dispatch,field,event}) => {
+	let searchCriteria = [];
+	let name = state.pageName + '-SEARCHBY';
+	if (field === name) {
 		if (event != null) {
 			for (let o = 0; o < event.length; o++) {
 				let option = {};
-				if (event[o].label.includes("ASC")) {
-					option.orderColumn = event[o].value;
-					option.orderDir = "ASC";
-				} else if (event[o].label.includes("DESC")){
-					option.orderColumn = event[o].value;
-					option.orderDir = "DESC";
-				} else {
-					option.orderColumn = event[o].value;
-				}
-				orderCriteria.push(option);
+				option.searchValue = state.searchValue;
+				option.searchColumn = event[o].value;
+				searchCriteria.push(option);
 			}
-		} else {
-			let orderColumn = state.pageName+"_TABLE_NAME";
-			let option = {orderColumn,orderDir:"ASC"};
-			orderCriteria.push(option);
 		}
-		this.props.actions.orderBy({state,orderCriteria});
-	}
-	
-	inputChange = (type,field,value,event) => {
-		//fuLogger.log({level:'TRACE',loc:'BaseContainer::inputChange',msg:"field "+ field + " value " + value});
-		utils.inputChange({type,props:this.props,field,value,event});
-	}
-	
-	onSave = () => {
-		fuLogger.log({level:'TRACE',loc:'BaseContainer::onSave',msg:"test"});
-		let state = this.getState();
-		let form = this.getForm();
-		let errors = utils.validateFormFields(state.prefForms[form], state.inputFields, this.props.appPrefs.prefGlobal.LANGUAGES);
-		
-		if (errors.isValid){
-			this.props.actions.saveItem({state});
-		} else {
-			this.props.actions.setErrors({errors:errors.errorMap});
-		}
-	}
-	
-	onModify = (item) => {
-		let id = null;
-		let state = this.getState();
-		if (item != null && item.id != null) {
-			id = item.id;
-		}
-		fuLogger.log({level:'TRACE',loc:'BaseContainer::onModify',msg:"item id "+id});
-		this.props.actions.modifyItem({state,id,appPrefs:this.props.appPrefs});
-	}
-	
-	onDelete = (item) => {
-		fuLogger.log({level:'TRACE',loc:'BaseContainer::onDelete',msg:"test"+item.id});
-		let state = this.getState();
-		this.props.actions.deleteItem({state,id:item.id});
-	}
-	
-	openDeleteModal = (item) => {
-		this.props.actions.openDeleteModal({item});
-	}
-	
-	closeModal = () => {
-		this.props.actions.closeDeleteModal();
-	}
-	
-	onCancel = () => {
-		fuLogger.log({level:'TRACE',loc:'BaseContainer::onCancel',msg:"test"});
-		let state = this.getState();
-		this.props.actions.list({state});
-	}
-	
-	goBack = () => {
-		fuLogger.log({level:'TRACE',loc:'BaseContainer::goBack',msg:"test"});
-		this.props.history.goBack();
-	}
-	
-	onOptionBase = (code,item) => {
-		fuLogger.log({level:'TRACE',loc:'BaseContainer::onOptionBase',msg:" code "+code});
-		switch(code) {
-			case 'MODIFY': {
-				this.onModify(item);
-				return true;
-			}
-			case 'DELETE': {
-				this.openDeleteModal(item);
-				return true;
-			}
-			case 'DELETEFINAL': {
-				this.onDelete(item);
-				return true;
-			}
+	} else {
+		for (let i = 0; i < state.searchCriteria.length; i++) {
+			let option = {};
+			option.searchValue = state.searchValue;
+			option.searchColumn = state.searchCriteria[i].searchColumn;
+			searchCriteria.push(option);
 		}
 	}
 
+	dispatch(actions.search({state,searchCriteria}));
+}
+	
+const onOrderBy = ({state, actions, dispatch, selectedOption, event}) => {
+	fuLogger.log({level:'TRACE',loc:'BaseContainer::onOrderBy',msg:"id " + selectedOption});
+	let orderCriteria = [];
+	if (event != null) {
+		for (let o = 0; o < event.length; o++) {
+			let option = {};
+			if (event[o].label.includes("ASC")) {
+				option.orderColumn = event[o].value;
+				option.orderDir = "ASC";
+			} else if (event[o].label.includes("DESC")){
+				option.orderColumn = event[o].value;
+				option.orderDir = "DESC";
+			} else {
+				option.orderColumn = event[o].value;
+			}
+			orderCriteria.push(option);
+		}
+	} else {
+		let orderColumn = state.pageName+"_TABLE_NAME";
+		let option = {orderColumn,orderDir:"ASC"};
+		orderCriteria.push(option);
+	}
+	dispatch(actions.orderBy({state,orderCriteria}));
+}
+	
+const inputChange = ({state,actions,dispatch,appPrefs,type,field,value,event}) => {
+	//fuLogger.log({level:'TRACE',loc:'BaseContainer::inputChange',msg:"field "+ field + " value " + value});
+	let val = "";
+		if (value == null || value == "") {
+			if (appPrefs.codeType === "Native") {
+				val = event.nativeEvent.text;
+			} else {
+				if (event != null) {
+					if (event.target != null) {
+						val = event.target.value;
+					} else {
+						val = event;
+					}
+				} else {
+					val = value;
+				}
+			}
+		} else {
+			val = value;
+		}
+		if (type === "DATE") {
+			val = event.toISOString();
+			dispatch(actions.inputChange(field,val));
+		} else if (type === "TEXT") {
+			dispatch(actions.inputChange(field,val));
+		} else if (type === "SWITCH") {
+			dispatch(actions.inputChange(field,val));
+		} else if (type === "SELECT") {
+			dispatch(actions.selectChange({field,"value":val}));
+		} else if (type === "SELECTCLICK") {
+			dispatch(actions.selectClick({field,value}));
+		} else if (type === "SELECTUPDATE") {
+			dispatch(actions.selectListUpdate({field,"value":val}));
+		}
+}
+
+const onSave = ({state,actions,dispatch,appPrefs,form}) => {
+	fuLogger.log({level:'TRACE',loc:'BaseContainer::onSave',msg:"test"});
+	let errors = utils.validateFormFields(state.prefForms[form], state.inputFields, appPrefs.prefGlobal.LANGUAGES);
+	
+	if (errors.isValid){
+		dispatch(actions.saveItem({state}));
+	} else {
+		dispatch(actions.setErrors({errors:errors.errorMap}));
+	}
+}
+
+const closeModal = ({actions,dispatch}) => {
+	dispatch(actions.closeDeleteModal());
+}
+
+const onCancel = ({state,actions,dispatch}) => {
+	fuLogger.log({level:'TRACE',loc:'BaseContainer::onCancel',msg:"test"});
+	dispatch(actions.list({state}));
+}
+
+const goBack = ({navigate}) => {
+	fuLogger.log({level:'TRACE',loc:'BaseContainer::goBack',msg:"test"});
+	navigate(-1);
+}
+
+const onOptionBase = ({state,actions,dispatch,code,appPrefs,item}) => {
+	fuLogger.log({level:'TRACE',loc:'BaseContainer::onOptionBase',msg:" code "+code});
+	switch(code) {
+		case 'MODIFY': {
+			let id = null;
+			if (item != null && item.id != null) {
+				id = item.id;
+			}
+			dispatch(actions.modifyItem({state,id,appPrefs:appPrefs}));
+			return true;
+		}
+		case 'DELETE': {
+			dispatch(actions.openDeleteModal({item}));
+			return true;
+		}
+		case 'DELETEFINAL': {
+			dispatch(actions.deleteItem({state,id:item.id}));
+			return true;
+		}
+	}
+}
+
+const BaseContainer = {
+	onListLimitChange: onListLimitChange,
+	onPaginationClick: onPaginationClick,
+	onSearchChange: onSearchChange,
+	onSearchClick: onSearchClick,
+	onOrderBy: onOrderBy,
+	onSave: onSave,
+	closeModal: closeModal,
+	onCancel: onCancel,
+	goBack: goBack,
+	onOptionBase: onOptionBase,
+	inputChange: inputChange
+	
 }
 
 export default BaseContainer;
