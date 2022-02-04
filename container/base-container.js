@@ -95,8 +95,8 @@ const onSearchClick = ({state,actions,dispatch,field,event}) => {
 	dispatch(actions.search({state,searchCriteria}));
 }
 	
-const onOrderBy = ({state, actions, dispatch, selectedOption, event}) => {
-	fuLogger.log({level:'TRACE',loc:'BaseContainer::onOrderBy',msg:"id " + selectedOption});
+const onOrderBy = ({state, actions, dispatch, event}) => {
+	fuLogger.log({level:'TRACE',loc:'BaseContainer::onOrderBy',msg:"orderby"});
 	let orderCriteria = [];
 	if (event != null) {
 		for (let o = 0; o < event.length; o++) {
@@ -203,6 +203,47 @@ const onOptionBase = ({state,actions,dispatch,code,appPrefs,item}) => {
 	}
 }
 
+const onBlur = ({state,actions,dispatch,field}) => {
+	fuLogger.log({level:'TRACE',loc:'ReleaseContainer::onBlur',msg:field.name});
+	let fieldName = field.name;
+	// get field and check what to do
+	if (field.optionalParams != ""){
+		let optionalParams = JSON.parse(field.optionalParams);
+		if (optionalParams.onBlur != null) {
+			if (optionalParams.onBlur.validation != null && optionalParams.onBlur.validation == "matchField") {
+				if (field.validation != "") {
+					let validation = JSON.parse(field.validation);
+					if (validation[optionalParams.onBlur.validation] != null && validation[optionalParams.onBlur.validation].id != null){
+						if (state.inputFields[validation[optionalParams.onBlur.validation].id] == state.inputFields[fieldName]) {
+							if (validation[optionalParams.onBlur.validation].successMsg != null) {
+								let successMap = state.successes;
+								if (successMap == null){
+									successMap = {};
+								}
+								successMap[fieldName] = validation[optionalParams.onBlur.validation].successMsg;
+								dispatch(actions.setSuccesses({successes:successMap, errors:null}));
+							}
+						} else {
+							if (validation[optionalParams.onBlur.validation].failMsg != null) {
+								let errorMap = state.errors;
+								if (errorMap == null){
+									errorMap = {};
+								}
+								errorMap[fieldName] = validation[optionalParams.onBlur.validation].failMsg;
+								dispatch(actions.setErrors({errors:errors.errorMap}));
+								
+							}
+						}
+					}
+				}
+			} else if (optionalParams.onBlur.func != null) {
+				
+			}
+		}
+	}
+
+}
+
 const BaseContainer = {
 	onListLimitChange: onListLimitChange,
 	onPaginationClick: onPaginationClick,
@@ -214,7 +255,8 @@ const BaseContainer = {
 	onCancel: onCancel,
 	goBack: goBack,
 	onOptionBase: onOptionBase,
-	inputChange: inputChange
+	inputChange: inputChange,
+	blur: blur
 	
 }
 
