@@ -67,7 +67,7 @@ const onSearchChange = ({state,actions,dispatch,appPrefs,field,event}) => {
 				}
 			}
 		}
-		//dispatch(actions.search({value}));
+		dispatch(actions.searchChange({field,value}));
 	}
 }
 
@@ -95,7 +95,7 @@ const onSearchClick = ({state,actions,dispatch,field,event}) => {
 	dispatch(actions.search({state,searchCriteria}));
 }
 	
-const onOrderBy = ({state, actions, dispatch, event}) => {
+const onOrderBy = ({state, actions, dispatch, field, event}) => {
 	fuLogger.log({level:'TRACE',loc:'BaseContainer::onOrderBy',msg:"orderby"});
 	let orderCriteria = [];
 	if (event != null) {
@@ -173,7 +173,7 @@ const closeModal = ({actions,dispatch}) => {
 
 const onCancel = ({state,actions,dispatch}) => {
 	fuLogger.log({level:'TRACE',loc:'BaseContainer::onCancel',msg:"test"});
-	dispatch(actions.list({state}));
+	dispatch(actions.cancel({state}));
 }
 
 const goBack = ({navigate}) => {

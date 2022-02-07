@@ -109,14 +109,9 @@ const updateSearch = (state,action) => {
 }
 
 const updateSearchChange = (state,action) => {
-	if (action.searchCriteria != null) {
-		let clone = Object.assign({}, state);
-		clone.searchFieldName = action.fieldName;
-		clone.searchValue = action.value;
-		return clone;
-	} else {
-        return state;
-    }
+	let clone = Object.assign({}, state);
+	clone.searchValue = action.params.value;
+	return clone;
 }
 
 const updateOrderBy = (state,action) => {
@@ -280,5 +275,5 @@ const loadInputFields = (item,forms,inputFields,appPrefs,group) => {
 }
 
 export default { getPrefForms, getPrefTexts, getPrefLabels, getPrefOptions, getColumns, 
-	getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch, 
+	getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch, updateSearchChange,
 	updateOrderBy, updateInputChange, updateClearField, updateErrors, loadInputFields };
