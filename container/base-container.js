@@ -163,7 +163,7 @@ const onSave = ({state,actions,dispatch,appPrefs,form}) => {
 	if (errors.isValid){
 		dispatch(actions.saveItem({state}));
 	} else {
-		dispatch(actions.setErrors({errors:errors.errorMap}));
+		dispatch(actions.setStatus({successes:null, errors:errors.errorMap}));
 	}
 }
 
@@ -221,7 +221,7 @@ const onBlur = ({state,actions,dispatch,field}) => {
 									successMap = {};
 								}
 								successMap[fieldName] = validation[optionalParams.onBlur.validation].successMsg;
-								dispatch(actions.setSuccesses({successes:successMap, errors:null}));
+								dispatch(actions.setStatus({successes:successMap, errors:null}));
 							}
 						} else {
 							if (validation[optionalParams.onBlur.validation].failMsg != null) {
@@ -230,7 +230,7 @@ const onBlur = ({state,actions,dispatch,field}) => {
 									errorMap = {};
 								}
 								errorMap[fieldName] = validation[optionalParams.onBlur.validation].failMsg;
-								dispatch(actions.setErrors({errors:errors.errorMap}));
+								dispatch(actions.setStatus({successes:null, errors:errors.errorMap}));
 								
 							}
 						}

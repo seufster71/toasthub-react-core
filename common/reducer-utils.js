@@ -1,7 +1,4 @@
-import React from 'react';
-import {Route, Redirect} from 'react-router';
-import PropTypes from 'prop-types';
-import fuLogger from './fu-logger';
+
 
 const getPrefForms = (action) => {
   let myPrefForms = {};
@@ -148,14 +145,19 @@ const updateClearField = (state,action) => {
     }
 }
 
-const updateErrors = (state,action) => {
-	if (action.errors != null) {
+const updateStatus = (state,action) => {
+	if (action.hasOwnProperty("successes") || action.hasOwnProperty("errors")) {
 		let clone = Object.assign({}, state);
-		clone.errors = action.errors;
+		if (action.hasOwnProperty("successes")) {
+			clone.successes = action.successes;
+		}
+		if (action.hasOwnProperty("errors")) {
+			clone.errors = action.errors;
+		}
 		return clone;
 	} else {
-        return state;
-    }
+		return state;
+	}
 }
 
 const loadInputFields = (item,forms,inputFields,appPrefs,group) => {
@@ -274,6 +276,6 @@ const loadInputFields = (item,forms,inputFields,appPrefs,group) => {
 	return inputFields;
 }
 
-export default { getPrefForms, getPrefTexts, getPrefLabels, getPrefOptions, getColumns, 
+export default { getPrefForms, getPrefTexts, getPrefLabels, getPrefOptions, getColumns, updateStatus,
 	getItemCount, getItems, getListLimit, getListStart, updateListLimit, updateSearch, updateSearchChange,
-	updateOrderBy, updateInputChange, updateClearField, updateErrors, loadInputFields };
+	updateOrderBy, updateInputChange, updateClearField, loadInputFields };
