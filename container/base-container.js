@@ -204,7 +204,6 @@ const onOptionBase = ({state,actions,dispatch,code,appPrefs,item}) => {
 }
 
 const onBlur = ({state,actions,dispatch,field}) => {
-	fuLogger.log({level:'TRACE',loc:'ReleaseContainer::onBlur',msg:field.name});
 	let fieldName = field.name;
 	// get field and check what to do
 	if (field.optionalParams != ""){

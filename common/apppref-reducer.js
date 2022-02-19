@@ -1,7 +1,7 @@
 export default function appPrefReducer(state = {}, action) {
   let myState = {};
   switch(action.type) {
-    case 'LOAD_INIT': {
+    case 'GLOBAL_INIT': {
     	if (action.responseJson != null && action.responseJson.params != null) {
     	    let myPrefForms = {};
     	    if (action.responseJson.params.prefFormFields != null) {

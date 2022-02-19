@@ -19,7 +19,7 @@ export function initPublic() {
     params.URI = '/api/public/callService';
 
     return callService(params).then( (responseJson) => {
-      dispatch({ type: "LOAD_INIT", responseJson });
+      dispatch({ type: "GLOBAL_INIT", responseJson });
     }).catch(error => {
       throw(error);
     });
