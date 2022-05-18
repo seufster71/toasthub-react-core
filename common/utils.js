@@ -1,8 +1,4 @@
 import React from 'react';
-import {Route} from 'react-router-dom';
-import {Outlet, Navigate} from 'react-router-dom';
-import PropTypes from 'prop-types';
-import fuLogger from './fu-logger';
 
 
 const validateFields = (params) => {
@@ -372,14 +368,6 @@ const marshallFields = (params) => {
 
 	const onBlur = (props,fieldName) => {
 		
-	};
-
-	export const PrivateRoute = ({component:Component, path:Path, permissions:Permissions, code:Code, minRights:MinRights, pathto:PathTo}) => {
-	    if (hasPermission(Permissions,Code,MinRights)) {
-			return <Outlet />;
-		} else {
-			return <Navigate to={PathTo}/>;
-		}
 	};
 
 	const validateFormFields = (formFields, inputFields, languages, group) => {

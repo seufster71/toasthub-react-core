@@ -243,20 +243,3 @@ const onBlur = ({state,actions,dispatch,field}) => {
 
 }
 
-const BaseContainer = {
-	onListLimitChange: onListLimitChange,
-	onPaginationClick: onPaginationClick,
-	onSearchChange: onSearchChange,
-	onSearchClick: onSearchClick,
-	onOrderBy: onOrderBy,
-	onSave: onSave,
-	closeModal: closeModal,
-	onCancel: onCancel,
-	goBack: goBack,
-	onOptionBase: onOptionBase,
-	inputChange: inputChange,
-	blur: blur
-	
-}
-
-export default BaseContainer;

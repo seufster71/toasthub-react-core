@@ -1,7 +1,4 @@
-
-import React from 'react';
-import PropTypes from 'prop-types';
-import {getDebugClient} from '../../app';
+import {getDebugClient} from '../../App';
 
 const log = (params) => {
   let x = getDebugClient();

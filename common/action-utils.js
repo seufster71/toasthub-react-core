@@ -8,6 +8,4 @@ const checkConnectivity = (responseJson,dispatch) => {
 	}
 };
 
-
-
 export default { checkConnectivity };
