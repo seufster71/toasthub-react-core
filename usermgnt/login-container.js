@@ -19,11 +19,12 @@ function LoginContainer() {
 		dispatch(userManagementActions.setView(view));
     }
 
-    const inputChange = (e) => {
-        if (appPrefs.codeType === 'NATIVE') {
-			dispatch(userManagementActions.setField({"field":[fieldName],"value":e.nativeEvent.text}));
-        } else {
+    const inputChange = (e,fieldName) => {
+	//	fuLogger.log({level:'TRACE',loc:'LoginContainer::inputChange',msg:"field "+fieldName});
+        if (e != null && e.target != null) {
 			dispatch(userManagementActions.setField({"field":[e.target.id],"value":e.target.value}));
+        } else {
+			dispatch(userManagementActions.setField({"field":[fieldName],"value":e}));
         }
     }
 
@@ -70,15 +71,14 @@ function LoginContainer() {
         
     }
 
-    const buttonClick = (e) => {
-        fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick',msg:"click"});
-		let fieldName = e.target.id;
+    const buttonClick = (fieldName) => {
+        fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick::fieldname',msg:fieldName});
+		fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick::memberState',msg:JSON.stringify(memberState)});
+		fuLogger.log({level:'TRACE',loc:'LoginContainer::buttonClick::appPrefs',msg:JSON.stringify(appPrefs)});
         if (fieldName === "LOGIN_FORM_SUBMIT_BUTTON") {
           let validateLogin = utils.validateFields({state:memberState,fields:appPrefs.prefForms.LOGIN_FORM,lang:appPrefs.lang,languages:appPrefs.prefGlobal.LANGUAGES,group:"MAIN",prefix:"LOGIN_FORM"});
           if (validateLogin.isValid == true) {
             let inputFields = utils.marshallFields({state:memberState,fields:appPrefs.prefForms.LOGIN_FORM,lang:appPrefs.lang,languages:appPrefs.prefGlobal.LANGUAGES,prefix:"LOGIN_FORM"});
-            let params = {};
-
             dispatch(userManagementActions.authenticate(inputFields, appPrefs.lang));
            // this.props.history.replace("/member");
           } else {

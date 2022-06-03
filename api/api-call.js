@@ -1,8 +1,8 @@
-import React from "react";
 import fuLogger from '../common/fu-logger';
-import {getHost} from '../../app';
-// test
+import {getHost} from '../../App';
+
 export default function callService(params) {
+	
   let requestParams = {};
   if (params != null) {
     if (params.requestParams == null) {
@@ -21,6 +21,8 @@ export default function callService(params) {
     .toString()
     .match(/([A-Z]+[+-][0-9]+.*)/)[1];
 
+  fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Request "+JSON.stringify(params)});
+
   return new Promise((resolve, reject) => {
     const uri = getHost()+params.URI;
     let headers = new Headers();
@@ -37,10 +39,10 @@ export default function callService(params) {
       .then(function(response) {
     	  if (response.status >= 400) {
     		  let responseMsg = {status:"ERROR", protocalError:response.status};
-    		  fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Received ",msgObj:response.status});
+    		  fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Received "+params.requestParams.service+" "+params.requestParams.action,msgObj:response.status});
     		  resolve(responseMsg);
     	  } else {
-    		  fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Request succeeded with JSON response ",msgObj:response});
+    		  fuLogger.log({level:'TRACE',loc:'api::callService',msg:"Response "+params.requestParams.service+" "+params.requestParams.action+" success with JSON response"});
     	      resolve(response.json());
     	  }
         

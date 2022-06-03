@@ -1,10 +1,12 @@
 import React from 'react';
+import fuLogger from './fu-logger';
 
 
 const validateFields = (params) => {
   //state,fields,lang,languages,group,prefix,fieldList
   let isValidTmp = true;
   let errorMapTmp = {};
+	fuLogger.log({level:'TRACE',loc:'validateFiels::params',msg:JSON.stringify(params)});
   for( let i = 0, len = params.fields.length; i < len; i++ ) {
     let field = params.fields[i];
     if (params.fieldList != null && params.fieldList.indexOf(field.name) < 0){
@@ -161,6 +163,7 @@ const marshallFields = (params) => {
 
 
 	const validateFieldTXT = (params, field, fieldName) => {
+		fuLogger.log({level:'TRACE',loc:'validateFieldTXT::params',msg:JSON.stringify(field)+" "+fieldName});
 	  let isValidTXT = true;
 	  let txtValue = params.state.inputFields[fieldName];
 	  let requiredError = false;
