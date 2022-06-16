@@ -243,3 +243,4 @@ const onBlur = ({state,actions,dispatch,field}) => {
 
 }
 
+export default { onListLimitChange, onPaginationClick, onSearchChange, onSearchClick, onOrderBy, inputChange, onSave, closeModal, onCancel, goBack, onOptionBase, onBlur }
