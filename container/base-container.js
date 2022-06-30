@@ -148,7 +148,11 @@ const inputChange = ({state,actions,dispatch,appPrefs,type,field,value,event}) =
 		} else if (type === "SWITCH") {
 			dispatch(actions.inputChange(field,val));
 		} else if (type === "SELECT") {
-			dispatch(actions.selectChange({field,"value":val}));
+			let myVal = value;
+			if (typeof val === 'object' && val.value != null) {
+				myVal = val.value
+			}
+			dispatch(actions.selectChange({field,"value":myVal}));
 		} else if (type === "SELECTCLICK") {
 			dispatch(actions.selectClick({field,value}));
 		} else if (type === "SELECTUPDATE") {
