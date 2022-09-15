@@ -147,7 +147,7 @@ const inputChange = ({state,actions,dispatch,appPrefs,type,field,value,event}) =
 			dispatch(actions.inputChange(field,val));
 		} else if (type === "SWITCH") {
 			dispatch(actions.inputChange(field,val));
-		} else if (type === "SELECT") {
+		} else if (type === "SELECT" || type === "MULTISELECT") {
 			let myVal = value;
 			if (typeof val === 'object' && val.value != null) {
 				myVal = val.value
