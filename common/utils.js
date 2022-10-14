@@ -377,7 +377,10 @@ const marshallFields = (params) => {
 		  
 		let isValidTmp = true;
 		let errorMapTmp = {};
-		  
+		let transactionType = "CREATE";
+		if (inputFields.itemId != null && inputFields.itemId != "") {
+			transactionType = "MODIFY";
+		}
 		if (formFields == null || inputFields == null){
 			return {isValid:false};
 		}
@@ -415,7 +418,7 @@ const marshallFields = (params) => {
 			        	break;
 			        }
 			        case "TXT": {
-			        	let resultTXT = validateFormFieldTXT({field:formFields[i],value:inputFields[formFields[i].name]});
+			        	let resultTXT = validateFormFieldTXT({field:formFields[i],value:inputFields[formFields[i].name],transactionType});
 			        	if (resultTXT.isValid == false) {
 			        		isValidTmp = resultTXT.isValid;
 			        	}
@@ -554,11 +557,21 @@ const marshallFields = (params) => {
 		return {isValid:isValidTmp,errorMap:errorMapTmp};
 	}; // validateFormFields
 
-	const validateFormFieldTXT = ({field, value, fieldName, langRequired}) => {
+	const validateFormFieldTXT = ({field, value, fieldName, langRequired, transactionType}) => {
 		let isValidTXT = true;
 		let requiredError = false;
 		let errorMapTXT = {};
-		(langRequired != null && langRequired == true)
+		let validateOn = null;
+		if (field.optionalParams != undefined && field.optionalParams != "") {
+			let optionalParams = field.optionalParams;
+			optionalParams = JSON.parse(optionalParams);
+			if (optionalParams != undefined && optionalParams.validateOn != undefined) {
+				validateOn = optionalParams.validateOn;
+			}
+		}
+		if (validateOn != undefined && !validateOn.includes(transactionType)) {
+			return {isValid:isValidTXT, errorMap:errorMapTXT};
+		}
 		if (field.required ){
 			if (langRequired == null || (langRequired != null && langRequired == true)) {
 				if (value == null || (value != null && value == "")){
