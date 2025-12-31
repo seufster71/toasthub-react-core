@@ -1,4 +1,4 @@
-import {getDebugClient} from '../../App';
+import {getDebugClient} from '../../app';
 
 const log = (params) => {
 	let x = getDebugClient();
